@@ -6,11 +6,12 @@
 		"build": "react-router build",
 		"dev": "react-router dev",
 		"start": "react-router-serve ./build/server/index.js",
-		"lint": "tsc && biome check ./app --write",
+		"lint": "tsc && biome check --write ./app",
 		"typecheck": "react-router typegen && tsc",
 		"prepare": "husky"
 	},
 	"dependencies": {
+		"@fontsource/plus-jakarta-sans": "^5.2.5",
 		"@radix-ui/react-slot": "^1.1.2",
 		"@rainbow-me/rainbowkit": "^2.2.4",
 		"@react-router/node": "^7.2.0",
@@ -36,19 +37,12 @@
 		"@types/node": "^20",
 		"@types/react": "^19.0.1",
 		"@types/react-dom": "^19.0.1",
-		"husky": "^9.1.7",
+		"husky": "^4.3.8",
 		"lint-staged": "^15.4.3",
 		"react-router-devtools": "^1.1.0",
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.7.2",
 		"vite": "^5.4.11",
 		"vite-tsconfig-paths": "^5.1.4"
-	},
-	"lint-staged": {
-		"*.{ts, js, jsx, tsx}": [
-			"biome check . --write",
-			"biome format . --write",
-			"npm run build"
-		]
 	}
 }

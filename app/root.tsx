@@ -10,6 +10,13 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import AppLayout from "./components/layouts";
+import "@fontsource/plus-jakarta-sans";
+import { createConfig, http, WagmiProvider } from "wagmi";
+import { connectors, chains, transports } from "./lib/wagmi.config";
+import { QueryClient, QueryClientContext } from "@tanstack/react-query";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { useState } from "react";
+import { sepolia } from "viem/chains";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,9 +31,20 @@ export const links: Route.LinksFunction = () => [
 	},
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+const queryClient = new QueryClient();
+
+export default function App() {
+	const [{ wagmiConfig, wagmiChains }] = useState(() => {
+		const wagmiConfig = createConfig({
+			connectors,
+			chains,
+			transports,
+		});
+
+		return { wagmiConfig, wagmiChains: chains };
+	});
 	return (
-		<html lang="en">
+		<html lang="en" className="dark">
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -34,16 +52,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<AppLayout>{children}</AppLayout>
-				<ScrollRestoration />
-				<Scripts />
+				{wagmiConfig && wagmiChains ? (
+					<>
+						<WagmiProvider config={wagmiConfig}>
+							<QueryClientContext.Provider value={queryClient}>
+								<RainbowKitProvider>
+									<AppLayout>
+										<Outlet />
+									</AppLayout>
+								</RainbowKitProvider>
+							</QueryClientContext.Provider>
+						</WagmiProvider>
+						<ScrollRestoration />
+						<Scripts />
+					</>
+				) : (
+					<>
+						<ScrollRestoration />
+						<Scripts />
+					</>
+				)}
 			</body>
 		</html>
 	);
-}
-
-export default function App() {
-	return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

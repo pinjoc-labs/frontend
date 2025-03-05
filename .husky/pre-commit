@@ -1,3 +1,25 @@
-# .husky/pre-commit
-npm run lint
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo '🏗️👷 Styling, testing and building your project before committing'
+
+# Check Prettier standards
+npm run lint ||
+(
+    echo '❌ Bjir, ada yang salah';
+    false;
+)
+
+# If everything passes... Now we can commit
+echo '👍 Mantab'
+
+echo '👷 Nyoba build'
+
+npm run build ||
+(
+    echo '❌ Bjir, build gagal'
+    false;
+)
+# If everything passes... Now we can commit
+echo '✅ LGTM'
 git update-index --again
