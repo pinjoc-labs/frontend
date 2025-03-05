@@ -16,7 +16,7 @@ import { connectors, chains, transports } from "./lib/wagmi.config";
 import { QueryClient, QueryClientContext } from "@tanstack/react-query";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
-import { sepolia } from "viem/chains";
+import "@rainbow-me/rainbowkit/styles.css";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,7 +56,7 @@ export default function App() {
 					<>
 						<WagmiProvider config={wagmiConfig}>
 							<QueryClientContext.Provider value={queryClient}>
-								<RainbowKitProvider>
+								<RainbowKitProvider modalSize="compact">
 									<AppLayout>
 										<Outlet />
 									</AppLayout>
