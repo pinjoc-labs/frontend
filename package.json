@@ -7,8 +7,7 @@
 		"dev": "react-router dev",
 		"start": "react-router-serve ./build/server/index.js",
 		"lint": "tsc && biome check --write ./app",
-		"typecheck": "react-router typegen && tsc",
-		"prepare": "husky"
+		"typecheck": "react-router typegen && tsc"
 	},
 	"dependencies": {
 		"@fontsource/plus-jakarta-sans": "^5.2.5",
