@@ -1,8 +1,8 @@
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
-import { metaMaskWallet, rabbyWallet } from '@rainbow-me/rainbowkit/wallets';
-import { type Chain } from 'viem';
-import { sepolia } from 'viem/chains';
-import { createConfig, http, injected } from 'wagmi';
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { metaMaskWallet, rabbyWallet } from "@rainbow-me/rainbowkit/wallets";
+import { type Chain } from "viem";
+import { sepolia } from "viem/chains";
+import { createConfig, http, injected } from "wagmi";
 
 /*
 const projectId = import.meta.env.VITE_CONNECT_WALLET_PROJECT_ID;
@@ -42,5 +42,5 @@ export const chains: readonly [Chain, ...Chain[]] = [monadTestnet];
 export const connectors = [injected()];
 export const chains: readonly [Chain, ...Chain[]] = [sepolia];
 export const transports = {
-  [sepolia.id]: http(),
+	[sepolia.id]: http(),
 };
