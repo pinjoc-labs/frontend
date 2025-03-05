@@ -1,6 +1,5 @@
 import type { IBorrowLend } from "./types";
 
-// Sample data based on the screenshot
 export const data: IBorrowLend[] = [
 	{
 		id: "usdc",
