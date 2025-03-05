@@ -6,7 +6,7 @@
 		"build": "react-router build",
 		"dev": "react-router dev",
 		"start": "react-router-serve ./build/server/index.js",
-		"lint": "tsc && biome check ./app --write",
+		"lint": "tsc && biome check --write ./app",
 		"typecheck": "react-router typegen && tsc",
 		"prepare": "husky"
 	},
@@ -44,12 +44,5 @@
 		"typescript": "^5.7.2",
 		"vite": "^5.4.11",
 		"vite-tsconfig-paths": "^5.1.4"
-	},
-	"lint-staged": {
-		"*.{ts, js, jsx, tsx}": [
-			"biome check . --write",
-			"biome format . --write",
-			"npm run build"
-		]
 	}
 }
