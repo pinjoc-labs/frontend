@@ -159,10 +159,10 @@ export function DataTable() {
 
 			{/* Table */}
 			<div
-				className="overflow-x-auto bg-neutral-800/50 rounded"
+				className="overflow-hidden bg-neutral-800/50 rounded"
 				style={{ height: `${TABLE_HEIGHT}px` }}
 			>
-				<Table className="border-collapse min-w-full">
+				<Table className="border-collapse ">
 					{loading ? (
 						<TableSkeleton />
 					) : (
@@ -194,10 +194,11 @@ export function DataTable() {
 									table.getRowModel().rows.map((row) => (
 										<TableRow
 											key={row.id}
+											data-state={row.getIsSelected() && "selected"}
 											className="border-b border-neutral-800 hover:bg-neutral-800/50"
 										>
 											{row.getVisibleCells().map((cell) => (
-												<TableCell key={cell.id} className="px-4 py-2">
+												<TableCell key={cell.id}>
 													{flexRender(
 														cell.column.columnDef.cell,
 														cell.getContext(),
