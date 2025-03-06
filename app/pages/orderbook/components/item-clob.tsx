@@ -15,7 +15,7 @@ export default function ItemClob({ apy, collateral, type }: ItemClobProps) {
 			type="button"
 			onClick={handleButtonClick}
 			className={cn(
-				"w-full my-[2px] text-sm px-2 py-[2px] flex items-center justify-between",
+				"w-full my-[3px] text-sm px-2 py-[2px] flex items-center justify-between",
 				type === "borrow" ? "bg-green-500/10" : "bg-red-500/10",
 			)}
 		>

@@ -1,10 +1,11 @@
 import Orderbook from "./components/orderbook";
+import Summary from "./components/summary";
 
 export default function OrderbookPage() {
 	return (
-		<div className="grid grid-flow-row-dense grid-cols-5 grid-rows-[8rem_auto] h-[calc(100vh-8rem)]">
-			<div className="col-span-5 h-[8rem] border-b border-gray-600 p-4">
-				Summary
+		<div className="grid grid-flow-row-dense grid-cols-5 grid-rows-[6rem_auto] h-[calc(100vh-8rem)]">
+			<div className="col-span-5 h-[6rem] flex items-center border-b border-gray-600 p-4">
+				<Summary />
 			</div>
 			<div className="col-span-3 grid grid-cols-1 grid-rows-5">
 				<div className="row-span-3 p-4">Chart</div>

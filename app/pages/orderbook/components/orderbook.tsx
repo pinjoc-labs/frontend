@@ -19,8 +19,12 @@ const mockDataLend: ItemClobProps[] = [
 export default function Orderbook() {
 	return (
 		<div className="flex flex-col h-full">
-			<div className="p-4 border-b border-gray-600 shadow-md">
+			<div className="p-2 border-b border-gray-600 shadow-md">
 				<h2 className="text-white text-xl font-semibold">Order Book</h2>
+			</div>
+			<div className="flex px-2 w-full py-2 justify-between border-b border-gray-600 shadow-md text-gray-100 font-semibold text-xs">
+				<span>APY(%)</span>
+				<span>Amount (USDC)</span>
 			</div>
 			<div className="flex flex-col justify-end h-full">
 				<div className="flex flex-1 h-fit flex-col flex-reverse justify-end overflow-y-hidden">
@@ -28,7 +32,12 @@ export default function Orderbook() {
 						<ItemClob key={index} {...item} />
 					))}
 				</div>
-				<div className="h-6 bg-gray-700">NILAI_TENGAH</div>
+				<div className="bg-gray-700 my-[3px] ">
+					<div className="w-full text-sm px-2 py-[2px] tex-base font-semibold flex items-center justify-between">
+						<span>Spread</span>
+						<span>6.5%</span>
+					</div>
+				</div>
 				<div className="flex flex-1 h-fit flex-col justify-start overflow-y-hidden">
 					{mockDataLend.map((item, index) => (
 						<ItemClob key={index} {...item} />
