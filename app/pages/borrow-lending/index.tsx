@@ -1,10 +1,13 @@
+import { useAvailableTokens } from "~/hooks/use-available-tokens";
 import { DataTable } from "./data-table";
+import { columns } from "./column";
 
 export default function BorrowLanding() {
+	const { availableTokens, isAvailableTokenLoading } = useAvailableTokens();
 	return (
-		<section className="max-w-5xl w-full mx-auto bg-neutral-900 text-white p-4">
+		<section className="max-w-5xl w-full mx-auto bg-purple-500/20 text-white p-5 rounded-lg">
 			<div className="flex items-center justify-between">
-				<h1 className="text-3xl font-bold">Lend</h1>
+				<h1 className="text-3xl font-bold">Borrow/Lend</h1>
 				<div className="flex gap-8">
 					<div>
 						<div className="text-sm text-muted-foreground">Supplied</div>
@@ -16,7 +19,11 @@ export default function BorrowLanding() {
 					</div>
 				</div>
 			</div>
-			<DataTable />
+			<DataTable
+				columns={columns}
+				data={availableTokens!}
+				isLoading={isAvailableTokenLoading}
+			/>
 		</section>
 	);
 }
