@@ -14,7 +14,6 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { columns } from "./column";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -25,7 +24,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { data } from "./dummy";
 
 // Constants
 const TABLE_HEIGHT = 500; // Fixed height for the table in pixels
@@ -43,14 +41,18 @@ export function SortingIndicator({ column }: { column: any }) {
 	);
 }
 
-function TableSkeleton() {
+function TableSkeleton<TData, TValue>({
+	columns,
+}: {
+	columns: ColumnDef<TData, TValue>[];
+}) {
 	return (
 		<>
-			<TableHeader className="sticky top-0 bg-neutral-900/50 z-10">
-				<TableRow className="border-b border-neutral-800 hover:bg-transparent">
+			<TableHeader className="sticky top-0 bg-purple-900/50 z-10">
+				<TableRow className="border-b border-purple-800 hover:bg-transparent">
 					{columns.map((column, index) => (
-						<TableHead key={index} className="text-neutral-400 font-normal">
-							<div className="h-6 bg-neutral-800/50 rounded animate-pulse w-16" />
+						<TableHead key={index} className="text-purple-400 font-normal">
+							<div className="h-6 bg-purple-800/50 rounded animate-pulse w-16" />
 						</TableHead>
 					))}
 				</TableRow>
@@ -59,27 +61,27 @@ function TableSkeleton() {
 				{Array(8)
 					.fill(0)
 					.map((_, rowIndex) => (
-						<TableRow key={rowIndex} className="border-b border-neutral-800">
+						<TableRow key={rowIndex} className="border-b border-purple-800">
 							{Array(columns.length)
 								.fill(0)
 								.map((_, cellIndex) => (
 									<TableCell key={cellIndex}>
 										{cellIndex === 0 ? (
 											<div className="flex items-center gap-2">
-												<div className="w-6 h-6 rounded-full bg-neutral-800 animate-pulse" />
-												<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-16" />
+												<div className="w-6 h-6 rounded-full bg-purple-800 animate-pulse" />
+												<div className="h-4 bg-purple-800/50 rounded animate-pulse w-16" />
 											</div>
 										) : cellIndex === 1 ? (
 											<div className="flex items-center gap-2">
-												<div className="w-6 h-6 rounded-full bg-neutral-800 animate-pulse" />
-												<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-12" />
+												<div className="w-6 h-6 rounded-full bg-purple-800 animate-pulse" />
+												<div className="h-4 bg-purple-800/50 rounded animate-pulse w-12" />
 											</div>
 										) : cellIndex === columns.length - 1 ? (
-											<div className="h-8 bg-neutral-800/50 rounded-full animate-pulse w-24" />
+											<div className="h-8 bg-purple-800/50 rounded-full animate-pulse w-24" />
 										) : (
 											<div className="space-y-2">
-												<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-16" />
-												<div className="h-3 bg-neutral-800/30 rounded animate-pulse w-20" />
+												<div className="h-4 bg-purple-800/50 rounded animate-pulse w-16" />
+												<div className="h-3 bg-purple-800/30 rounded animate-pulse w-20" />
 											</div>
 										)}
 									</TableCell>
@@ -91,35 +93,37 @@ function TableSkeleton() {
 	);
 }
 
-export function DataTable() {
-	const [loading, setLoading] = React.useState(true);
+interface DataTableProps<TData, TValue> {
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+	isLoading: boolean;
+}
+
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	isLoading,
+}: DataTableProps<TData, TValue>) {
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [sorting, setSorting] = React.useState<SortingState>([
 		{
-			id: "lendApy",
+			id: "Asset",
 			desc: true,
 		},
 	]);
-
-	React.useEffect(() => {
-		// Simulate loading data
-		const timer = setTimeout(() => {
-			setLoading(false);
-		}, 2000);
-
-		return () => clearTimeout(timer);
-	}, []);
 
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[],
 	);
 
 	React.useEffect(() => {
-		if (searchQuery) {
-			setColumnFilters([{ id: "token", value: searchQuery }]);
-		} else {
-			setColumnFilters([]);
-		}
+		setColumnFilters((prev) =>
+			searchQuery
+				? [{ id: "Asset", value: searchQuery }]
+				: prev.length
+					? []
+					: prev,
+		);
 	}, [searchQuery]);
 
 	const [columnVisibility, setColumnVisibility] =
@@ -155,17 +159,17 @@ export function DataTable() {
 			</div>
 			<div className="px-4 pb-2">
 				<Input
-					placeholder="Search by token name..."
+					placeholder="Search by asset name..."
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className="max-w-sm bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-400"
+					className="max-w-sm bg-purple-800 border-purple-700 text-white placeholder:text-purple-400"
 				/>
 			</div>
 			<div className="flex items-center justify-between p-4">
 				<div className="flex flex-1 items-center space-x-2">
 					<div className="text-sm text-muted-foreground">
-						{loading ? (
-							<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-32" />
+						{isLoading ? (
+							<div className="h-4 bg-purple-800/50 rounded animate-pulse w-32" />
 						) : sorting.length > 0 ? (
 							<div className="flex items-center gap-1">
 								<span>Sorted by:</span>
@@ -196,32 +200,32 @@ export function DataTable() {
 						size="sm"
 						onClick={() => setSorting([])}
 						className="h-8 px-2 lg:px-3"
-						disabled={loading || sorting.length === 0}
+						disabled={isLoading || sorting.length === 0}
 					>
 						Reset
 					</Button>
 				</div>
 			</div>
 			<div
-				className="overflow-hidden bg-neutral-800/50 rounded"
+				className="overflow-hidden bg-purple-800/50 rounded"
 				style={{ height: `${TABLE_HEIGHT}px` }}
 			>
 				<Table className="border-collapse ">
-					{loading ? (
-						<TableSkeleton />
+					{isLoading ? (
+						<TableSkeleton columns={columns} />
 					) : (
 						<>
-							<TableHeader className="sticky top-0 bg-neutral-800/50 z-10">
+							<TableHeader className="sticky top-0 bg-purple-800/50 z-10">
 								{table.getHeaderGroups().map((headerGroup) => (
 									<TableRow
 										key={headerGroup.id}
-										className="border-b border-neutral-800 hover:bg-transparent"
+										className="border-b border-purple-800 hover:bg-transparent"
 									>
 										{headerGroup.headers.map((header) => {
 											return (
 												<TableHead
 													key={header.id}
-													className="text-neutral-400 font-normal"
+													className="text-purple-400 font-normal"
 												>
 													{header.isPlaceholder
 														? null
@@ -241,7 +245,7 @@ export function DataTable() {
 										<TableRow
 											key={row.id}
 											data-state={row.getIsSelected() && "selected"}
-											className="border-b border-neutral-800 hover:bg-neutral-800/50"
+											className="border-b border-purple-800 hover:bg-purple-800/50"
 										>
 											{row.getVisibleCells().map((cell) => (
 												<TableCell key={cell.id}>
@@ -270,10 +274,10 @@ export function DataTable() {
 					)}
 				</Table>
 			</div>
-			<div className="flex items-center justify-end space-x-2 p-4 bg-neutral-800/50">
+			<div className="flex items-center justify-end space-x-2 p-4 bg-purple-800/50">
 				<div className="flex-1 text-sm text-muted-foreground">
-					{loading ? (
-						<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-20" />
+					{isLoading ? (
+						<div className="h-4 bg-purple-800/50 rounded animate-pulse w-20" />
 					) : (
 						`${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`
 					)}
@@ -283,7 +287,7 @@ export function DataTable() {
 						variant="secondary"
 						size="icon"
 						onClick={() => table.previousPage()}
-						disabled={loading || !table.getCanPreviousPage()}
+						disabled={isLoading || !table.getCanPreviousPage()}
 						className="h-8 w-8 rounded-full p-0"
 					>
 						<ChevronLeft className="h-4 w-4" />
@@ -293,7 +297,7 @@ export function DataTable() {
 						variant="secondary"
 						size="icon"
 						onClick={() => table.nextPage()}
-						disabled={loading || !table.getCanNextPage()}
+						disabled={isLoading || !table.getCanNextPage()}
 						className="h-8 w-8 rounded-full p-0"
 					>
 						<ChevronRight className="h-4 w-4" />
