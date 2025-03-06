@@ -4,9 +4,9 @@ import type { ReactNode } from "react";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
 	return (
-		<main className="grid min-h-screen grid-rows-[auto_1fr_auto]">
+		<main className="flex flex-col min-h-screen">
 			<Header />
-			{children}
+			<div className="flex-1 overflow-y-auto">{children}</div>
 			<Footer />
 		</main>
 	);

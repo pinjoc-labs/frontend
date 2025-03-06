@@ -10,7 +10,7 @@ export const links: HeaderLinkProps[] = [
 
 export default function Header() {
 	return (
-		<header className="w-screen flex items-center border-b border-gray-600 justify-between p-4 gap-x-8 mb-4 shadow-md">
+		<header className="w-screen flex items-center border-b border-gray-600 justify-between p-4 gap-x-8 shadow-md">
 			<h1 className="flex items-center text-3xl font-bold">
 				<span>PINJ</span>
 				<img src="/logo.png" alt="Pinjoc Logo" className="size-8" />
