@@ -40,11 +40,11 @@ export function SortingIndicator({ column }: { column: any }) {
 function TableSkeleton() {
 	return (
 		<>
-			<TableHeader className="sticky top-0 bg-neutral-900/50 z-10">
+			<TableHeader className="sticky top-0 bg-purple-400/10 z-10">
 				<TableRow className="border-b border-neutral-800">
 					{columns.map((column, index) => (
 						<TableHead key={index} className="text-neutral-400 font-normal">
-							<div className="h-6 bg-neutral-800/50 rounded animate-pulse w-20 mx-auto" />
+							<div className="h-6 bg-purple-400/10 rounded animate-pulse w-20 mx-auto" />
 						</TableHead>
 					))}
 				</TableRow>
@@ -54,7 +54,7 @@ function TableSkeleton() {
 					<TableRow key={rowIndex} className="border-b border-neutral-800">
 						{columns.map((_, cellIndex) => (
 							<TableCell key={cellIndex} className="px-4 py-3">
-								<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-24 mx-auto" />
+								<div className="h-4 bg-purple-400/10 rounded animate-pulse w-24 mx-auto" />
 							</TableCell>
 						))}
 					</TableRow>
@@ -109,7 +109,7 @@ export function DataTable() {
 		<div>
 			{/* Header */}
 			<div className="p-6 pb-2">
-				<h1 className="text-2xl font-semibold">Portfolio</h1>
+				<h1 className="text-2xl font-semibold">Transaction History</h1>
 			</div>
 
 			{/* Search Input */}
@@ -118,7 +118,7 @@ export function DataTable() {
 					placeholder="Search by token name..."
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className="max-w-sm bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-400"
+					className="max-w-sm bg-purple-400/10 border-neutral-700 text-white placeholder:text-neutral-400"
 				/>
 			</div>
 
@@ -126,7 +126,7 @@ export function DataTable() {
 			<div className="flex items-center justify-between p-4">
 				<div className="text-sm text-muted-foreground">
 					{loading ? (
-						<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-32" />
+						<div className="h-4 bg-purple-400/10 rounded animate-pulse w-32" />
 					) : sorting.length > 0 ? (
 						<span>
 							Sorted by: <strong>{sorting[0].id}</strong>{" "}
@@ -159,7 +159,7 @@ export function DataTable() {
 
 			{/* Table */}
 			<div
-				className="overflow-hidden bg-neutral-800/50 rounded"
+				className="overflow-hidden bg-purple-400/10 rounded"
 				style={{ height: `${TABLE_HEIGHT}px` }}
 			>
 				<Table className="border-collapse ">
@@ -167,11 +167,11 @@ export function DataTable() {
 						<TableSkeleton />
 					) : (
 						<>
-							<TableHeader className="sticky top-0 bg-neutral-800/50 z-10">
+							<TableHeader className="sticky top-0 bg-purple-400/10 z-10">
 								{table.getHeaderGroups().map((headerGroup) => (
 									<TableRow
 										key={headerGroup.id}
-										className="border-b border-neutral-800 bg-neutral-900 hover:bg-transparent"
+										className="border-b border-neutral-800 hover:bg-transparent"
 									>
 										{headerGroup.headers.map((header) => (
 											<TableHead
@@ -195,7 +195,7 @@ export function DataTable() {
 										<TableRow
 											key={row.id}
 											data-state={row.getIsSelected() && "selected"}
-											className="border-b border-neutral-800 hover:bg-neutral-800/50"
+											className="border-b border-neutral-800 hover:bg-purple-400/10"
 										>
 											{row.getVisibleCells().map((cell) => (
 												<TableCell key={cell.id}>
@@ -226,10 +226,10 @@ export function DataTable() {
 			</div>
 
 			{/* Pagination */}
-			<div className="flex items-center justify-end space-x-2 p-4 bg-neutral-800/50">
+			<div className="flex items-center justify-end space-x-2 p-4 bg-purple-400/10">
 				<div className="flex-1 text-sm text-muted-foreground">
 					{loading ? (
-						<div className="h-4 bg-neutral-800/50 rounded animate-pulse w-20" />
+						<div className="h-4 bg-purple-400/10 rounded animate-pulse w-20" />
 					) : (
 						`${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`
 					)}
