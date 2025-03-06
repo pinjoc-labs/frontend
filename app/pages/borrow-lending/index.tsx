@@ -5,7 +5,7 @@ import { columns } from "./column";
 export default function BorrowLanding() {
 	const { availableTokens, isAvailableTokenLoading } = useAvailableTokens();
 	return (
-		<section className="max-w-5xl w-full mx-auto bg-purple-500/20 text-white p-5 rounded-lg">
+		<section className="max-w-7xl w-full mx-auto bg-neutral-500/20 text-white p-5 rounded-lg">
 			<div className="flex items-center justify-between">
 				<h1 className="text-3xl font-bold">Borrow/Lend</h1>
 				<div className="flex gap-8">

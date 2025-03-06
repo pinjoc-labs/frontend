@@ -109,7 +109,7 @@ export function DataTable() {
 		<div>
 			{/* Header */}
 			<div className="p-6 pb-2">
-				<h1 className="text-2xl font-semibold">Transaction History</h1>
+				<h1 className="text-2xl font-semibold">Portfolio</h1>
 			</div>
 
 			{/* Search Input */}
