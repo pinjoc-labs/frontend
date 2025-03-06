@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {
+	type ColumnDef,
 	type ColumnFiltersState,
 	type SortingState,
 	type VisibilityState,
@@ -13,9 +14,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { columns } from "./column";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import {
 	Table,
 	TableBody,
@@ -24,7 +23,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { data } from "./dummy";
 
 // Constants
 const TABLE_HEIGHT = 500; // Fixed table height
@@ -37,7 +35,11 @@ export function SortingIndicator({ column }: { column: any }) {
 }
 
 // Skeleton Table for loading state
-function TableSkeleton() {
+function TableSkeleton<TData, TValue>({
+	columns,
+}: {
+	columns: ColumnDef<TData, TValue>[];
+}) {
 	return (
 		<>
 			<TableHeader className="sticky top-0 bg-purple-400/10 z-10">
@@ -64,11 +66,18 @@ function TableSkeleton() {
 	);
 }
 
-export function DataTable() {
+interface DataTableProps<TData, TValue> {
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+}
+
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+}: DataTableProps<TData, TValue>) {
 	const [loading, setLoading] = React.useState(true);
-	const [searchQuery, setSearchQuery] = React.useState("");
 	const [sorting, setSorting] = React.useState<SortingState>([
-		{ id: "timestamp", desc: true },
+		{ id: "asset", desc: true },
 	]);
 
 	React.useEffect(() => {
@@ -80,9 +89,6 @@ export function DataTable() {
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[],
 	);
-	React.useEffect(() => {
-		setColumnFilters(searchQuery ? [{ id: "token", value: searchQuery }] : []);
-	}, [searchQuery]);
 
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
@@ -107,21 +113,6 @@ export function DataTable() {
 
 	return (
 		<div>
-			{/* Header */}
-			<div className="p-6 pb-2">
-				<h1 className="text-2xl font-semibold">Transaction History</h1>
-			</div>
-
-			{/* Search Input */}
-			<div className="px-4 pb-2">
-				<Input
-					placeholder="Search by token name..."
-					value={searchQuery}
-					onChange={(e) => setSearchQuery(e.target.value)}
-					className="max-w-sm bg-purple-400/10 border-neutral-700 text-white placeholder:text-neutral-400"
-				/>
-			</div>
-
 			{/* Sorting & Controls */}
 			<div className="flex items-center justify-between p-4">
 				<div className="text-sm text-muted-foreground">
@@ -137,15 +128,6 @@ export function DataTable() {
 					)}
 				</div>
 				<div className="flex space-x-2">
-					{searchQuery && (
-						<Button
-							variant="secondary"
-							size="sm"
-							onClick={() => setSearchQuery("")}
-						>
-							Clear search
-						</Button>
-					)}
 					<Button
 						variant="secondary"
 						size="sm"
@@ -164,7 +146,7 @@ export function DataTable() {
 			>
 				<Table className="border-collapse ">
 					{loading ? (
-						<TableSkeleton />
+						<TableSkeleton columns={columns} />
 					) : (
 						<>
 							<TableHeader className="sticky top-0 bg-purple-400/10 z-10">
@@ -190,35 +172,22 @@ export function DataTable() {
 								))}
 							</TableHeader>
 							<TableBody>
-								{table.getRowModel().rows.length ? (
-									table.getRowModel().rows.map((row) => (
-										<TableRow
-											key={row.id}
-											data-state={row.getIsSelected() && "selected"}
-											className="border-b border-neutral-800 hover:bg-purple-400/10"
-										>
-											{row.getVisibleCells().map((cell) => (
-												<TableCell key={cell.id}>
-													{flexRender(
-														cell.column.columnDef.cell,
-														cell.getContext(),
-													)}
-												</TableCell>
-											))}
-										</TableRow>
-									))
-								) : (
-									<TableRow>
-										<TableCell
-											colSpan={columns.length}
-											className="h-24 text-center"
-										>
-											{searchQuery
-												? `No results found for "${searchQuery}".`
-												: "No results."}
-										</TableCell>
+								{table.getRowModel().rows.map((row) => (
+									<TableRow
+										key={row.id}
+										data-state={row.getIsSelected() && "selected"}
+										className="border-b border-neutral-800 hover:bg-purple-400/10"
+									>
+										{row.getVisibleCells().map((cell) => (
+											<TableCell key={cell.id}>
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext(),
+												)}
+											</TableCell>
+										))}
 									</TableRow>
-								)}
+								))}
 							</TableBody>
 						</>
 					)}

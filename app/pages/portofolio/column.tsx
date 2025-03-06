@@ -1,115 +1,207 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { Clipboard, Check } from "lucide-react";
-import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { SortingIndicator } from "./data-table";
-import type { IHistory } from "./types";
-
-// Function untuk truncate ID & Hash di tengah
-const truncateMiddle = (text: string, startLength = 6, endLength = 6) => {
-	if (text.length <= startLength + endLength) return text;
-	return `${text.slice(0, startLength)}...${text.slice(-endLength)}`;
-};
-
-// Function untuk mengubah timestamp ke format tanggal
-const formatDate = (timestamp: number) => {
-	return new Date(timestamp * 1000).toLocaleString("en-US", {
-		year: "numeric",
-		month: "short",
-		day: "2-digit",
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit",
-	});
-};
-
-// Component Copy Button
-const CopyButton = ({ text }: { text: string }) => {
-	const [copied, setCopied] = useState(false);
-
-	const handleCopy = () => {
-		navigator.clipboard.writeText(text);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 1500); // Reset setelah 1.5 detik
-	};
-
-	return (
-		<Button variant="ghost" onClick={handleCopy} className="p-1 cursor-pointer">
-			{copied ? (
-				<Check className="w-4 h-4 text-green-500" />
-			) : (
-				<Clipboard className="w-4 h-4" />
-			)}
-		</Button>
-	);
-};
+import type { ICollection, ISupply } from "./types";
 
 // Columns definition
-export const columns: ColumnDef<IHistory>[] = [
+export const columnsBorrow: ColumnDef<ICollection>[] = [
 	{
-		accessorKey: "id",
-		header: "ID",
+		accessorKey: "asset",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Asset
+				<SortingIndicator column={column} />
+			</Button>
+		),
 		cell: ({ row }) => (
-			<div className="flex items-center gap-2 min-w-[200px]">
-				<span>{truncateMiddle(row.original.id)}</span>
-				<CopyButton text={row.original.id} />
-			</div>
+			<span className="font-medium">{row.getValue("asset")}</span>
 		),
 	},
 	{
-		accessorKey: "type",
+		accessorKey: "colleteral",
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
 				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
 			>
-				Type
+				Colleteral
 				<SortingIndicator column={column} />
 			</Button>
 		),
-	},
-	{
-		accessorKey: "token",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
-			>
-				Token
-				<SortingIndicator column={column} />
-			</Button>
-		),
-	},
-	{
-		accessorKey: "blockNumber",
-		header: "Block Number",
-	},
-	{
-		accessorKey: "hash",
-		header: "Hash",
 		cell: ({ row }) => (
-			<div className="flex items-center gap-2 min-w-[250px]">
-				<span>{truncateMiddle(row.original.hash)}</span>
-				<CopyButton text={row.original.hash} />
-			</div>
+			<span className="font-medium">{row.getValue("colleteral")}</span>
 		),
 	},
 	{
-		accessorKey: "timestamp",
+		accessorKey: "maturity",
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
 				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
 			>
-				Timestamp
+				Maturity
 				<SortingIndicator column={column} />
 			</Button>
 		),
-		cell: ({ row }) => <span>{formatDate(row.original.timestamp)}</span>,
-		sortingFn: (rowA, rowB) =>
-			rowA.original.timestamp - rowB.original.timestamp, // Sorting tetap berdasarkan angka
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("maturity")}</span>
+		),
+	},
+	{
+		accessorKey: "borrowed",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Borrowed
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("borrowed")}</span>
+		),
+	},
+	{
+		accessorKey: "apy",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				APY
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("apy")}</span>
+		),
+	},
+	{
+		accessorKey: "action",
+		header: () => {
+			return <p>Action</p>;
+		},
+		cell: () => {
+			return (
+				<div className="flex items-center space-x-2">
+					<Button variant="secondary" className="rounded-full cursor-pointer">
+						Repay
+					</Button>
+					<Button variant="secondary" className="rounded-full cursor-pointer">
+						Add Collateral
+					</Button>
+				</div>
+			);
+		},
+	},
+];
+
+export const columnsSupply: ColumnDef<ISupply>[] = [
+	{
+		accessorKey: "asset",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Asset
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("asset")}</span>
+		),
+	},
+	{
+		accessorKey: "supplied",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Supplied
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("supplied")}</span>
+		),
+	},
+	{
+		accessorKey: "maturity",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Maturity
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("maturity")}</span>
+		),
+	},
+	{
+		accessorKey: "earned",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				Earned
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("earned")}</span>
+		),
+	},
+	{
+		accessorKey: "apy",
+		header: ({ column }) => (
+			<Button
+				variant="ghost"
+				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
+			>
+				APY
+				<SortingIndicator column={column} />
+			</Button>
+		),
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("apy")}</span>
+		),
+	},
+	{
+		accessorKey: "action",
+		header: () => {
+			return <p>Action</p>;
+		},
+		cell: () => {
+			return (
+				<div className="flex items-center space-x-2">
+					<Button variant="secondary" className="rounded-full cursor-pointer">
+						Withdraw
+					</Button>
+					<Button variant="secondary" className="rounded-full cursor-pointer">
+						View Token Market
+					</Button>
+				</div>
+			);
+		},
 	},
 ];
