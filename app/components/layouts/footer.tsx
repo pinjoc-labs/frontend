@@ -15,7 +15,7 @@ const externalLinks: HeaderLinkProps[] = [
 
 export default function Footer() {
 	return (
-		<footer className="w-screen flex items-center border-t border-gray-600 p-4 gap-x-8 shadow-md">
+		<footer className="w-screen flex items-center border-t border-gray-600 p-4 h-16 gap-x-8 shadow-md">
 			<h1 className="flex items-center text-xl font-bold">
 				<span>PINJ</span>
 				<img src="/logo.png" alt="Pinjoc Logo" className="size-6" />

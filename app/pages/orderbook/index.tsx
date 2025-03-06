@@ -1,6 +1,6 @@
 export default function Orderbook() {
 	return (
-		<div className="grid grid-flow-row-dense grid-cols-5 grid-rows-[8rem_auto]">
+		<div className="grid grid-flow-row-dense grid-cols-5 grid-rows-[8rem_auto] h-[calc(100vh-8rem)]">
 			<div className="col-span-5 h-[8rem] border-b border-gray-600">
 				Summary
 			</div>
