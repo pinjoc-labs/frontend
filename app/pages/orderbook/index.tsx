@@ -1,3 +1,4 @@
+import { ActionTab } from "./components/form";
 import { SelectMaturity } from "./components/maturity-select";
 import Orderbook from "./components/orderbook";
 import Summary from "./components/summary";
@@ -16,7 +17,9 @@ export default function OrderbookPage() {
 				<SelectMaturity />
 				<Orderbook />
 			</div>
-			<div>Form</div>
+			<div>
+				<ActionTab />
+			</div>
 		</div>
 	);
 }
