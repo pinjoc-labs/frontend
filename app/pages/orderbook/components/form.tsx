@@ -19,7 +19,7 @@ export function ActionTab() {
 			defaultValue="supply"
 			className="w-full h-full rounded-none bg-transparent"
 		>
-			<TabsList className="grid w-full grid-cols-2 rounded-none p-0 h-12 bg-transparent border-b border-gray-600">
+			<TabsList className="grid w-full grid-cols-2 rounded-none p-0 h-14 bg-transparent border-b border-gray-600">
 				<TabsTrigger
 					className={cn(
 						"bg-transparent h-full rounded-none text-gray-700",

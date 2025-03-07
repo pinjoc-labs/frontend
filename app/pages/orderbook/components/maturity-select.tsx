@@ -12,7 +12,7 @@ import { maturityList } from "../data/maturity-list";
 export function SelectMaturity() {
 	return (
 		<Select>
-			<SelectTrigger className="w-full h-12 text-white rounded-none border-b border-gray-600 m-0">
+			<SelectTrigger className="w-full h-12 text-white rounded-none border-0 border-b border-gray-600 m-0">
 				<SelectValue placeholder="Select Maturity" />
 			</SelectTrigger>
 			<SelectContent className="p-2">
