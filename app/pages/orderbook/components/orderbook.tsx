@@ -1,4 +1,5 @@
 import ItemClob, { type ItemClobProps } from "./item-clob";
+import { SelectMaturity } from "./maturity-select";
 
 const mockDataBorrow: ItemClobProps[] = [
 	{ apy: "5.2", collateral: "1000", type: "borrow" },
@@ -19,10 +20,11 @@ const mockDataLend: ItemClobProps[] = [
 export default function Orderbook() {
 	return (
 		<div className="flex flex-col h-full">
-			<div className="p-2 border-b border-gray-600 shadow-md">
+			<div className="p-2 border-b h-20 flex items-center justify-center border-gray-600 shadow-md">
 				<h2 className="text-white text-xl font-semibold">Order Book</h2>
 			</div>
-			<div className="flex px-2 w-full py-2 justify-between border-b border-gray-600 shadow-md text-gray-100 font-semibold text-xs">
+			<SelectMaturity />
+			<div className="flex px-3 w-full py-2 justify-between border-b border-gray-600 shadow-md text-gray-100 font-semibold text-xs">
 				<span>APY(%)</span>
 				<span>Amount (USDC)</span>
 			</div>
