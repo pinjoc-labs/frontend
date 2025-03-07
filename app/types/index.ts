@@ -12,3 +12,18 @@ export interface AvailableTokens {
 	MaturityRange: string;
 	RateRange: string;
 }
+
+export interface TokenizedBonds {
+	QuoteTokenName: string;
+	QuoteTokenSymbol: string;
+	QuoteTokenAddress: string;
+	QuoteTokenIcon: string;
+	BaseTokenName: string;
+	BaseTokenSymbol: string;
+	BaseTokenAddress: string;
+	BaseTokenIcon: string;
+	PriceRange: string;
+	MaturityRange: string;
+	Volume24h: number;
+	RateRange: string;
+}

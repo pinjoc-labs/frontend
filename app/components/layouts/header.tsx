@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router";
 export const links: HeaderLinkProps[] = [
 	{ href: "/", children: "Borrow/Lend" },
 	{ href: "/portofolio", children: "Portofolio" },
+	{ href: "/tokenized-bond", children: "Tokenized Bond" },
 	{ href: "/history", children: "History" },
 ];
 
