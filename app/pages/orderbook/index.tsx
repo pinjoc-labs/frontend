@@ -1,3 +1,4 @@
+import { SelectMaturity } from "./components/maturity-select";
 import Orderbook from "./components/orderbook";
 import Summary from "./components/summary";
 
@@ -12,9 +13,10 @@ export default function OrderbookPage() {
 				<div className="p-4 border-t border-gray-600">Position</div>
 			</div>
 			<div className="border-x border-x-gray-600">
+				<SelectMaturity />
 				<Orderbook />
 			</div>
-			<div className="p-4">Form Order</div>
+			<div>Form</div>
 		</div>
 	);
 }
