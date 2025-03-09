@@ -1,9 +1,13 @@
 import { cn } from "~/lib/utils";
 import type { OrderType } from "../types/clob.type";
+import useMaturityStore from "../states/maturity-state";
 
 export default function ItemClob(props: OrderType) {
+	const { setAmount, setRate, setStatusMarket } = useMaturityStore();
 	const handleButtonClick = () => {
-		console.log(props);
+		setAmount(props.AvailableToken);
+		setRate(props.Rate);
+		setStatusMarket(false);
 	};
 	return (
 		<button

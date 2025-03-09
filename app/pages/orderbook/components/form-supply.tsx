@@ -1,3 +1,4 @@
+import { useAccount } from "wagmi";
 import { Button } from "~/components/ui/button";
 import {
 	Card,
@@ -10,13 +11,48 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroupItem, RadioGroup } from "~/components/ui/radio-group";
 import { cn } from "~/lib/utils";
+import useMaturityStore from "../states/maturity-state";
+import { useSummary } from "../data/get-summary";
+import { useEffect, useState } from "react";
 
 export default function FormSupply() {
+	const balance = 12345;
+	const { isConnected, address } = useAccount();
+	const {
+		isMarket,
+		rate: currentRate,
+		amount: maxAmount,
+		setStatusMarket,
+		maturity,
+	} = useMaturityStore();
+
+	const { DebtTokenAddress, CollateralAddress } = useSummary();
+
+	const [rate, setRate] = useState(0);
+	const [amount, setAmount] = useState(0);
+	const [collateral, setCollateral] = useState(0);
+
+	useEffect(() => {
+		setRate(currentRate);
+	}, [currentRate]);
+
+	const handleSelect = (value: string) => {
+		if (value === "market") {
+			setStatusMarket(true);
+		} else {
+			setStatusMarket(false);
+		}
+	};
+
 	return (
 		<Card className="bg-transparent border-0 p-4 rounded-none">
 			<CardHeader className="px-0 py-2">
 				<CardTitle>
-					<RadioGroup defaultValue="market" className="gap-4">
+					<RadioGroup
+						value={isMarket ? "market" : "limit"}
+						onValueChange={handleSelect}
+						className="gap-4"
+					>
 						<div className="flex items-center gap-6">
 							<div className="flex items-center space-x-3">
 								<RadioGroupItem
@@ -52,7 +88,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">387343 USDC</p>
+					<p className="text-base text-white font-semibold">{`${balance} USDC`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
@@ -62,7 +98,9 @@ export default function FormSupply() {
 					<div className="w-full flex-1" />
 					<Input
 						id="fixed-rate-supply"
-						value="6.5"
+						value={rate}
+						type="number"
+						onChange={(e) => setRate(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">%</span>
@@ -74,8 +112,13 @@ export default function FormSupply() {
 					</Label>
 					<div className="w-full flex-1" />
 					<Input
+						type="number"
 						id="supply-supply"
-						value="1234"
+						value={amount}
+						onChange={(e) => {
+							if (+e.target.value > balance) return;
+							setAmount(Number(e.target.value));
+						}}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">USDC</span>
