@@ -97,9 +97,10 @@ const useMaturityStore = create<MaturityState & MaturityActions>((set) => ({
 				(item: BestRateType) => item.Maturity === defaultMaturity,
 			);
 
+			set({ maturities: data });
+
 			if (bestRates.length > 0) {
 				set({
-					maturities: data,
 					bestRate: bestRates[0].BestRate,
 					maturity: bestRates[0].Maturity,
 				});

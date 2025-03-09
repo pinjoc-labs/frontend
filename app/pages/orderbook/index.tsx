@@ -1,3 +1,4 @@
+import ClobChart from "./components/chart";
 import { ActionTab } from "./components/form";
 import Orderbook from "./components/orderbook";
 import Summary from "./components/summary";
@@ -10,10 +11,10 @@ export default function OrderbookPage() {
 					<Summary />
 				</div>
 				<div className="grid grid-cols-1 grid-rows-5">
-					<div className="row-span-3 p-4">Chart</div>
-					<div className="p-4 border-t border-gray-600 row-span-2">
-						Position
+					<div className="row-span-3 p-4">
+						<ClobChart />
 					</div>
+					<div className="p-4 row-span-2">Position</div>
 				</div>
 			</div>
 			<div className="border-x border-x-gray-600">
