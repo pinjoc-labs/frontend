@@ -9,8 +9,14 @@ import { useEffect, useState } from "react";
 
 export default function Orderbook() {
 	const { DebtTokenAddress, CollateralAddress } = useSummary();
-	const { bestRate, maturity, fetchMaturities, setAmount, setRate } =
-		useMaturityStore();
+	const {
+		bestRate,
+		maturity,
+		fetchMaturities,
+		setAmount,
+		setRate,
+		setBestAmount,
+	} = useMaturityStore();
 	const { data } = useClob({
 		collateral_address: CollateralAddress,
 		debt_token_address: DebtTokenAddress,
@@ -36,6 +42,7 @@ export default function Orderbook() {
 				setBestRates(separateData[0]);
 				setAmount(separateData[0].AvailableToken);
 				setRate(separateData[0].Rate);
+				setBestAmount(separateData[0].AvailableToken);
 			}
 		}
 

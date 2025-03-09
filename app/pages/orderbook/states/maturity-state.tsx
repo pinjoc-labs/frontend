@@ -7,6 +7,7 @@ interface MaturityState {
 	maturity: string | null;
 	bestRate: number;
 	rate: number;
+	bestAmount: number;
 	amount: number;
 	error: string | null;
 	isMarket: boolean;
@@ -21,6 +22,7 @@ interface MaturityActions {
 	setStatusMarket: (status: boolean) => void;
 	setRate: (rate: number) => void;
 	setAmount: (rate: number) => void;
+	setBestAmount: (rate: number) => void;
 }
 
 const defaultMaturity = "MAY 2025";
@@ -30,9 +32,14 @@ const useMaturityStore = create<MaturityState & MaturityActions>((set) => ({
 	maturity: null,
 	bestRate: 0,
 	rate: 0,
+	bestAmount: 0,
 	error: null,
-	isMarket: true,
+	isMarket: false,
 	amount: 0,
+
+	setBestAmount: (amount: number) => {
+		set((state) => ({ ...state, bestAmount: amount }));
+	},
 
 	setMaturity: (maturity: string) => {
 		set((state) => {
@@ -66,10 +73,14 @@ const useMaturityStore = create<MaturityState & MaturityActions>((set) => ({
 	},
 
 	setStatusMarket: (status: boolean) => {
-		set((state) => ({
-			...state,
-			isMarket: status,
-		}));
+		set((state) => {
+			return {
+				...state,
+				rate: status ? state.bestRate : state.rate,
+				amount: status ? state.bestAmount : state.amount,
+				isMarket: status,
+			};
+		});
 	},
 
 	fetchMaturities: async (
