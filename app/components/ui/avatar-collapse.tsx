@@ -12,7 +12,7 @@ export const AvatarCollapse = ({
 	avatarUrls,
 }: AvatarCollapseProps) => {
 	return (
-		<div className={cn("z-10 flex -space-x-4 rtl:space-x-reverse", className)}>
+		<div className={cn("z-10 flex -space-x-3 rtl:space-x-reverse", className)}>
 			{avatarUrls.map((url, index) => (
 				<img
 					key={index}

@@ -2,20 +2,20 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { SortingIndicator } from "./data-table";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
-import type { AvailableTokens } from "~/types";
+import type { TokenizedBonds } from "~/types";
 import { AvatarCollapse } from "~/components/ui/avatar-collapse";
 
-export const columns: ColumnDef<AvailableTokens>[] = [
+export const columns: ColumnDef<TokenizedBonds>[] = [
 	{
-		accessorKey: "Asset",
-		accessorFn: (row) => row.CollateralTokenName,
+		accessorKey: "Symbol",
+		accessorFn: (row) => `${row.BaseTokenSymbol}/${row.QuoteTokenSymbol}`,
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
 				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				className="hover:bg-transparent hover:text-white font-extralight"
 			>
-				Assets
+				Symbol
 				<SortingIndicator column={column} />
 			</Button>
 		),
@@ -24,11 +24,11 @@ export const columns: ColumnDef<AvailableTokens>[] = [
 				<div className="text-white font-extralight flex items-center gap-8">
 					<AvatarCollapse
 						avatarUrls={[
-							row.original.CollateralTokenIcon,
-							row.original.DebtTokenIcon,
+							row.original.BaseTokenIcon,
+							row.original.QuoteTokenIcon,
 						]}
 					/>
-					{row.original.CollateralTokenSymbol}/{row.original.DebtTokenSymbol}
+					{row.original.BaseTokenSymbol}/{row.original.QuoteTokenSymbol}
 				</div>
 			</div>
 		),
@@ -68,56 +68,77 @@ export const columns: ColumnDef<AvailableTokens>[] = [
 		),
 	},
 	{
-		accessorKey: "LendingVault",
+		accessorKey: "PriceRange",
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
 				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
 			>
-				Lender Vault
+				Price
 				<SortingIndicator column={column} />
 			</Button>
 		),
 		cell: ({ row }) => {
-			const formatLenderVault = new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0,
-			}).format(row.getValue("LendingVault"));
-
-			return <div className="font-extralight">{formatLenderVault}</div>;
+			function formatRange(value: string) {
+				const [start, end] = value
+					.split("~")
+					.map((value: string) => Number.parseFloat(value.trim()));
+				const formatter = new Intl.NumberFormat("en-US", {
+					currency: "USD",
+					style: "currency",
+					maximumFractionDigits: 2,
+					minimumFractionDigits: 2,
+				});
+				return `${formatter.format(start)} ~ ${formatter.format(end)}`;
+			}
+			return (
+				<div className="font-extralight">
+					{formatRange(row.getValue("PriceRange"))}
+				</div>
+			);
 		},
 	},
 	{
-		accessorKey: "BorrowVault",
+		accessorKey: "Volume24h",
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
 				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				className="px-0 font-normal cursor-pointer hover:text-white hover:bg-transparent"
 			>
-				Borrow Vault
+				Volume
 				<SortingIndicator column={column} />
 			</Button>
 		),
 		cell: ({ row }) => {
-			const borrowFormat = new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0,
-			}).format(row.getValue("BorrowVault"));
+			function formatVolume24h(value: number): string {
+				let formattedValue: string;
 
-			return <div className="font-extralight">{borrowFormat}</div>;
+				if (value >= 1_000_000_000) {
+					formattedValue = (value / 1_000_000_000).toFixed(2) + "B";
+				} else if (value >= 1_000_000) {
+					formattedValue = (value / 1_000_000).toFixed(2) + "M";
+				} else if (value >= 1_000) {
+					formattedValue = (value / 1_000).toFixed(0) + "K";
+				} else {
+					formattedValue = value.toString();
+				}
+
+				return `${formattedValue} USDC`;
+			}
+			return (
+				<div className="font-extralight">
+					{formatVolume24h(row.getValue("Volume24h"))}
+				</div>
+			);
 		},
 	},
 	{
 		accessorKey: "action",
 		header: () => <p className="text-start">Action</p>,
 		cell: ({ row }) => (
-			<Link to={`/orderbook/${btoa(JSON.stringify(row.original))}`}>
+			<Link to={`/tokenizedbond-market/${btoa(JSON.stringify(row.original))}`}>
 				<Button variant="secondary" className="rounded-full cursor-pointer">
 					View market
 				</Button>

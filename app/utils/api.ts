@@ -1,5 +1,5 @@
 import { ApiClient } from "~/lib/api-client";
-import type { AvailableTokens } from "~/types";
+import type { AvailableTokens, TokenizedBonds } from "~/types";
 
 const api = new ApiClient(
 	"https://dazzling-enjoyment-production.up.railway.app/api/v1",
@@ -21,4 +21,8 @@ export const getClob = async (params: any) => {
 
 export const getBestRates = async (payload: any) => {
 	return api.post<any>("/clob/maturity-best-rate", payload);
+};
+
+export const getTokeninedBonds = async () => {
+	return api.get<TokenizedBonds[]>("/token/available-token");
 };
