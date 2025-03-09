@@ -10,12 +10,12 @@ import {
 import useMaturityStore from "../states/maturity-state";
 
 export default function ClobChart() {
-	const { maturities } = useMaturityStore();
-	console.log(maturities);
+	const { maturities, setMaturity } = useMaturityStore();
 	return (
 		<div className="h-full w-full bg-black/10 rounded-md">
 			<ResponsiveContainer width="100%" height="100%">
 				<AreaChart
+					onClick={(e) => setMaturity(e.activeLabel || "")}
 					data={maturities}
 					margin={{ top: 0, right: 0, left: -32, bottom: 0 }}
 				>
