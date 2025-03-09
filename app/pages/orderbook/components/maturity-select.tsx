@@ -7,22 +7,25 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
-import { maturityList } from "../data/maturity-list";
+import useMaturityStore from "../states/maturity-state";
+import type { BestRateType } from "../types/best-rate.type";
 
 export function SelectMaturity() {
+	const { maturity, maturities, setMaturity } = useMaturityStore();
+
 	return (
-		<Select>
+		<Select value={maturity || ""} onValueChange={(d) => setMaturity(d)}>
 			<SelectTrigger className="w-full h-12 text-white rounded-none border-0 border-b border-gray-600 m-0">
 				<SelectValue placeholder="Select Maturity" />
 			</SelectTrigger>
 			<SelectContent className="p-2">
 				<SelectGroup>
 					<SelectLabel>Select Maturity</SelectLabel>
-					{(maturityList || []).map((data) => (
+					{(maturities || []).map((data: BestRateType) => (
 						<SelectItem
-							key={`${data.month}${data.year}`}
-							value={`${data.month}${data.year}`}
-						>{`MATURITY ${data.month} ${data.year}`}</SelectItem>
+							key={data.Maturity}
+							value={data.Maturity}
+						>{`MATURITY ${data.Maturity}`}</SelectItem>
 					))}
 				</SelectGroup>
 			</SelectContent>

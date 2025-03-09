@@ -1,14 +1,9 @@
 import { cn } from "~/lib/utils";
+import type { OrderType } from "../types/clob.type";
 
-export type ItemClobProps = {
-	apy: string;
-	collateral: string;
-	type: string;
-};
-
-export default function ItemClob({ apy, collateral, type }: ItemClobProps) {
+export default function ItemClob(props: OrderType) {
 	const handleButtonClick = () => {
-		console.log(apy, collateral);
+		console.log(props);
 	};
 	return (
 		<button
@@ -16,20 +11,22 @@ export default function ItemClob({ apy, collateral, type }: ItemClobProps) {
 			onClick={handleButtonClick}
 			className={cn(
 				"w-full my-[3px] text-sm px-3 py-[2px] flex items-center justify-between",
-				type === "borrow" ? "bg-green-500/10" : "bg-red-500/10",
+				props.OrderType.toLowerCase() === "lend"
+					? "bg-green-500/10"
+					: "bg-red-500/10",
 			)}
 		>
 			<span
 				className={cn(
-					type === "borrow"
+					props.OrderType.toLowerCase() === "lend"
 						? "text-green-500 hover:font-bold"
 						: "text-red-500 hover:font-bold",
 				)}
 			>
-				{`${apy}%`}
+				{`${props.Rate}%`}
 			</span>
 			<span className="text-white bg-transparent border-none outline-none hover:font-bold">
-				{collateral}
+				{props.AvailableToken}
 			</span>
 		</button>
 	);
