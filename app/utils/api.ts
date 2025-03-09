@@ -22,7 +22,6 @@ export const getClob = async (params: any) => {
 export const getBestRates = async (payload: any) => {
 	return api.post<any>("/clob/maturity-best-rate", payload);
 };
-
 export const getTokeninedBonds = async () => {
 	return api.get<TokenizedBonds[]>("/token/available-token");
 };
