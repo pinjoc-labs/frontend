@@ -6,18 +6,18 @@ import { createConfig, http, injected } from "wagmi";
 import { toPrivyWallet } from "@privy-io/cross-app-connect/rainbow-kit";
 
 export const monadTestnet = {
-  id: 10143,
-  name: 'Monad Testnet',
-  nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://testnet-rpc.monad.xyz'] },
-  },
-  blockExplorers: {
-    default: {
-      name: 'blockscout',
-      url: 'https://testnet-explorer.monad.xyz',
-    },
-  },
+	id: 10143,
+	name: "Monad Testnet",
+	nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
+	rpcUrls: {
+		default: { http: ["https://testnet-rpc.monad.xyz"] },
+	},
+	blockExplorers: {
+		default: {
+			name: "blockscout",
+			url: "https://testnet-explorer.monad.xyz",
+		},
+	},
 } as const satisfies Chain;
 
 export const connectors = connectorsForWallets(
@@ -42,9 +42,9 @@ export const connectors = connectorsForWallets(
 );
 
 export const config = createConfig({
-  connectors,
-  chains: [monadTestnet],
-  transports: {
-    [monadTestnet.id]: http(),
-  },
+	connectors,
+	chains: [monadTestnet],
+	transports: {
+		[monadTestnet.id]: http(),
+	},
 });
