@@ -11,12 +11,13 @@ import type { Route } from './+types/root';
 import './app.css';
 import AppLayout from './components/layouts';
 import '@fontsource/plus-jakarta-sans';
-import { createConfig, http, WagmiProvider } from 'wagmi';
-import { connectors, chains, transports } from './lib/wagmi.config';
+import { WagmiProvider } from 'wagmi';
+import { config } from './lib/wagmi.config';
 import { QueryClient, QueryClientContext } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import '@rainbow-me/rainbowkit/styles.css';
+import { Toaster } from 'sonner';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -35,13 +36,9 @@ const queryClient = new QueryClient();
 
 export default function App() {
   const [{ wagmiConfig, wagmiChains }] = useState(() => {
-    const wagmiConfig = createConfig({
-      connectors,
-      chains,
-      transports,
-    });
+    const wagmiConfig = config;
 
-    return { wagmiConfig, wagmiChains: chains };
+    return { wagmiConfig, wagmiChains: wagmiConfig.chains };
   });
   return (
     <html lang="en" className="dark">
@@ -59,6 +56,7 @@ export default function App() {
                 <RainbowKitProvider modalSize="compact">
                   <AppLayout>
                     <Outlet />
+                    <Toaster position="top-center" richColors={true} />
                   </AppLayout>
                 </RainbowKitProvider>
               </QueryClientContext.Provider>
