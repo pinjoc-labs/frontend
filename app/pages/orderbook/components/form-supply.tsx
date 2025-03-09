@@ -26,7 +26,12 @@ export default function FormSupply() {
 		maturity,
 	} = useMaturityStore();
 
-	const { DebtTokenAddress, CollateralAddress } = useSummary();
+	const {
+		DebtTokenAddress,
+		CollateralAddress,
+		DebtTokenSymbol,
+		CollateralTokenSymbol,
+	} = useSummary();
 
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
@@ -88,7 +93,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${balance} USDC`}</p>
+					<p className="text-base text-white font-semibold">{`${balance} ${DebtTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
@@ -121,7 +126,9 @@ export default function FormSupply() {
 						}}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
-					<span className="text-base text-white font-semibold">USDC</span>
+					<span className="text-base text-white font-semibold">
+						{DebtTokenSymbol}
+					</span>
 				</div>
 				<div className="w-full flex justify-end">
 					<Button

@@ -26,7 +26,12 @@ export default function FormBorrow() {
 		maturity,
 	} = useMaturityStore();
 
-	const { DebtTokenAddress, CollateralAddress } = useSummary();
+	const {
+		DebtTokenAddress,
+		CollateralAddress,
+		DebtTokenSymbol,
+		CollateralTokenSymbol,
+	} = useSummary();
 
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
@@ -136,7 +141,9 @@ export default function FormBorrow() {
 						onChange={(e) => setCollateral(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
-					<span className="text-base text-white font-semibold">USDC</span>
+					<span className="text-base text-white font-semibold">
+						{CollateralTokenSymbol}
+					</span>
 				</div>
 				<div className="w-full flex justify-end">
 					<Button
@@ -161,7 +168,9 @@ export default function FormBorrow() {
 						onChange={(e) => setAmount(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
-					<span className="text-base text-white font-semibold">USDC</span>
+					<span className="text-base text-white font-semibold">
+						{DebtTokenSymbol}
+					</span>
 				</div>
 				<div className="w-full flex justify-end">
 					<Button
