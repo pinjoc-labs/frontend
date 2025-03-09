@@ -6,7 +6,10 @@ interface MaturityState {
 	maturities: BestRateType[];
 	maturity: string | null;
 	bestRate: number;
+	rate: number;
+	amount: number;
 	error: string | null;
+	isMarket: boolean;
 }
 
 interface MaturityActions {
@@ -15,18 +18,22 @@ interface MaturityActions {
 		collateral_address: string,
 		debt_token_address: string,
 	) => Promise<void>;
+	setStatusMarket: (status: boolean) => void;
+	setRate: (rate: number) => void;
+	setAmount: (rate: number) => void;
 }
 
 const defaultMaturity = "MAY 2025";
 
 const useMaturityStore = create<MaturityState & MaturityActions>((set) => ({
-	// Initial state
 	maturities: [],
 	maturity: null,
 	bestRate: 0,
+	rate: 0,
 	error: null,
+	isMarket: true,
+	amount: 0,
 
-	// Actions
 	setMaturity: (maturity: string) => {
 		set((state) => {
 			const bestRates = state.maturities.filter(
@@ -36,15 +43,33 @@ const useMaturityStore = create<MaturityState & MaturityActions>((set) => ({
 			if (bestRates.length > 0) {
 				return {
 					...state,
+					isMarket: true,
+					rate: bestRates[0].BestRate,
 					bestRate: bestRates[0].BestRate,
 					maturity: bestRates[0].Maturity,
 				};
 			}
+
 			return {
 				...state,
 				error: "No matching maturities found",
 			};
 		});
+	},
+
+	setAmount: (amount: number) => {
+		set((state) => ({ ...state, amount }));
+	},
+
+	setRate: (rate: number) => {
+		set((state) => ({ ...state, isMarket: false, rate }));
+	},
+
+	setStatusMarket: (status: boolean) => {
+		set((state) => ({
+			...state,
+			isMarket: status,
+		}));
 	},
 
 	fetchMaturities: async (

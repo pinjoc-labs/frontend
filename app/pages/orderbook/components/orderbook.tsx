@@ -6,11 +6,11 @@ import ItemClob from "./item-clob";
 import { SelectMaturity } from "./maturity-select";
 import useMaturityStore from "../states/maturity-state";
 import { useEffect, useState } from "react";
-import type { BestRateType } from "../types/best-rate.type";
 
 export default function Orderbook() {
 	const { DebtTokenAddress, CollateralAddress } = useSummary();
-	const { bestRate, maturity, fetchMaturities } = useMaturityStore();
+	const { bestRate, maturity, fetchMaturities, setAmount, setRate } =
+		useMaturityStore();
 	const { data } = useClob({
 		collateral_address: CollateralAddress,
 		debt_token_address: DebtTokenAddress,
@@ -32,8 +32,13 @@ export default function Orderbook() {
 
 		if (indexBestRate > -1) {
 			const separateData = (data || []).splice(indexBestRate, 1);
-			if (separateData.length > 0) setBestRates(separateData[0]);
+			if (separateData.length > 0) {
+				setBestRates(separateData[0]);
+				setAmount(separateData[0].AvailableToken);
+				setRate(separateData[0].Rate);
+			}
 		}
+
 		const { DataBorrow, DataLend } = separateOrders(data);
 		setDataLend(DataLend);
 		setDataBorrow(DataBorrow);

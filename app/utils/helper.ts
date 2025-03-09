@@ -1,6 +1,7 @@
 import type { OrdersType, OrderType } from "~/pages/orderbook/types/clob.type";
 
-export const extractMonthAndYear = (maturity: string) => {
+export const extractMonthAndYear = (m: string) => {
+	const maturity = m.trim();
 	const month = maturity.substring(0, 3).toUpperCase();
 	const year = maturity.substring(3);
 
