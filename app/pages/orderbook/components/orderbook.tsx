@@ -1,27 +1,66 @@
-import ItemClob, { type ItemClobProps } from "./item-clob";
+import { separateOrders } from "~/utils/helper";
+import { useClob } from "../data/get-clob";
+import { useSummary } from "../data/get-summary";
+import type { OrderType } from "../types/clob.type";
+import ItemClob from "./item-clob";
 import { SelectMaturity } from "./maturity-select";
-
-const mockDataBorrow: ItemClobProps[] = [
-	{ apy: "5.2", collateral: "1000", type: "borrow" },
-	{ apy: "4.8", collateral: "750", type: "borrow" },
-	{ apy: "6.1", collateral: "1200", type: "borrow" },
-	{ apy: "5.5", collateral: "800", type: "borrow" },
-];
-
-const mockDataLend: ItemClobProps[] = [
-	{ apy: "3.2", collateral: "500", type: "lend" },
-	{ apy: "3.8", collateral: "600", type: "lend" },
-	{ apy: "2.9", collateral: "400", type: "lend" },
-	{ apy: "4.1", collateral: "650", type: "lend" },
-	{ apy: "3.5", collateral: "550", type: "lend" },
-	{ apy: "2.7", collateral: "350", type: "lend" },
-];
+import useMaturityStore from "../states/maturity-state";
+import { useEffect, useState } from "react";
+import type { BestRateType } from "../types/best-rate.type";
 
 export default function Orderbook() {
+	const { DebtTokenAddress, CollateralAddress } = useSummary();
+	const { bestRate, maturity, fetchMaturities } = useMaturityStore();
+	const { data } = useClob({
+		collateral_address: CollateralAddress,
+		debt_token_address: DebtTokenAddress,
+		maturity: maturity || "MAY 2025",
+	});
+
+	const [dataBorrow, setDataBorrow] = useState<OrderType[]>([]);
+	const [dataLend, setDataLend] = useState<OrderType[]>([]);
+	const [bestRates, setBestRates] = useState<OrderType | null>(null);
+
+	useEffect(() => {
+		fetchMaturities(CollateralAddress, DebtTokenAddress);
+	}, [CollateralAddress, DebtTokenAddress]);
+
+	useEffect(() => {
+		const indexBestRate = (data || []).findIndex((item: OrderType) => {
+			return item.Rate === bestRate;
+		});
+
+		if (indexBestRate > -1) {
+			const separateData = (data || []).splice(indexBestRate, 1);
+			if (separateData.length > 0) setBestRates(separateData[0]);
+		}
+		const { DataBorrow, DataLend } = separateOrders(data);
+		setDataLend(DataLend);
+		setDataBorrow(DataBorrow);
+	}, [data, maturity]);
+
 	return (
 		<div className="flex flex-col h-full">
 			<div className="p-2 border-b h-20 flex items-center justify-center border-gray-600 shadow-md">
-				<h2 className="text-white text-xl font-semibold">Order Book</h2>
+				<h2 className="text-white text-xl font-semibold flex gap-2 items-center">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<title>Order Book</title>
+						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+						<path d="M4 19l16 0" />
+						<path d="M4 15l4 -6l4 2l4 -5l4 4" />
+					</svg>
+					<span>Order Book</span>
+				</h2>
 			</div>
 			<SelectMaturity />
 			<div className="flex px-3 w-full py-2 justify-between border-b border-gray-600 shadow-md text-gray-100 font-semibold text-xs">
@@ -29,20 +68,19 @@ export default function Orderbook() {
 				<span>Amount (USDC)</span>
 			</div>
 			<div className="flex flex-col justify-end h-full">
-				<div className="flex flex-1 h-fit flex-col flex-reverse justify-end overflow-y-hidden">
-					{mockDataBorrow.map((item, index) => (
-						<ItemClob key={index} {...item} />
+				<div className="flex flex-1 h-fit flex-col justify-end overflow-y-hidden">
+					{(dataLend || []).map((item: OrderType) => (
+						<ItemClob key={item.Rate} {...item} />
 					))}
 				</div>
 				<div className="bg-gray-700 my-[3px] ">
-					<div className="w-full text-sm px-2 py-[2px] tex-base font-semibold flex items-center justify-between">
-						<span>Spread</span>
-						<span>6.5%</span>
+					<div className="w-full text-sm px-3 py-[2px] tex-base font-semibold flex items-center justify-between">
+						{bestRates ? <span>{bestRates.Rate}</span> : <span />}
 					</div>
 				</div>
 				<div className="flex flex-1 h-fit flex-col justify-start overflow-y-hidden">
-					{mockDataLend.map((item, index) => (
-						<ItemClob key={index} {...item} />
+					{(dataBorrow || []).map((item: OrderType) => (
+						<ItemClob key={item.Rate} {...item} />
 					))}
 				</div>
 			</div>

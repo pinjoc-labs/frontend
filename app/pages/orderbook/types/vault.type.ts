@@ -1,27 +1,18 @@
 import { z } from "zod";
 
-const TokenSchema = z.object({
-	TokenName: z.string(),
-	TokenSymbol: z.string(),
-	TokenAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
-	TokenIcon: z.string().url(),
-});
-
-const VaultSchema = z.object({
+export const CryptoLoanSchema = z.object({
+	DebtTokenName: z.string(),
+	DebtTokenSymbol: z.string(),
+	DebtTokenAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+	DebtTokenIcon: z.string().url(),
+	CollateralTokenName: z.string(),
+	CollateralTokenSymbol: z.string(),
+	CollateralAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+	CollateralTokenIcon: z.string().url(),
+	MaturityRange: z.string(),
+	RateRange: z.string(),
 	LendingVault: z.number(),
 	BorrowVault: z.number(),
 });
 
-const LoanDetailsSchema = z.object({
-	MaturityRange: z.string(),
-	RateRange: z.string(),
-});
-
-export const CryptoLoanSchema = z.object({
-	DebtToken: TokenSchema,
-	CollateralToken: TokenSchema,
-	MaturityRange: LoanDetailsSchema.shape.MaturityRange,
-	RateRange: LoanDetailsSchema.shape.RateRange,
-	LendingVault: VaultSchema.shape.LendingVault,
-	BorrowVault: VaultSchema.shape.BorrowVault,
-});
+export type CryptoLoanType = z.infer<typeof CryptoLoanSchema>;

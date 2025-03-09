@@ -1,23 +1,38 @@
 import { TokenIcon } from "~/components/derived/wagmi/token-icon";
-const mockTokens = {
-	ETH: {
-		token: "ETH",
-		imageUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-	},
-	USDC: {
-		token: "USDC",
-		imageUrl: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-	},
-};
+import { useSummary } from "../data/get-summary";
+
 export default function Summary() {
+	const {
+		LendingVault,
+		BorrowVault,
+		MaturityRange,
+		RateRange,
+		DebtTokenName,
+		DebtTokenSymbol,
+		DebtTokenIcon,
+		CollateralTokenName,
+		CollateralTokenSymbol,
+		CollateralTokenIcon,
+	} = useSummary();
 	return (
-		<div className="flex items-center justify-start gap-x-12">
-			<TokenIcon from={mockTokens.ETH} to={mockTokens.USDC} />
-			<h2 className="font-semibold text-xl">ETH/USDC</h2>
-			<SummaryItem label="Lending Vault" value="100,000,000" />
-			<SummaryItem label="Borrow Vault" value="100,000,000" />
-			<SummaryItem label="Maturity" value="100,000,000" />
-			<SummaryItem label="Rate" value="100,000,000" />
+		<div className="flex items-center justify-start gap-x-10">
+			<div className="flex gap-x-6 items-center">
+				<TokenIcon
+					from={{
+						token: DebtTokenName,
+						imageUrl: DebtTokenIcon,
+					}}
+					to={{
+						token: CollateralTokenName,
+						imageUrl: CollateralTokenIcon,
+					}}
+				/>
+				<h2 className="font-semibold text-xl">{`${DebtTokenSymbol}/${CollateralTokenSymbol}`}</h2>
+			</div>
+			<SummaryItem label="Lending Vault" value={String(LendingVault)} />
+			<SummaryItem label="Borrow Vault" value={String(BorrowVault)} />
+			<SummaryItem label="Maturity" value={MaturityRange} />
+			<SummaryItem label="Rate" value={RateRange} />
 		</div>
 	);
 }
