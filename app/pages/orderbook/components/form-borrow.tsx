@@ -10,13 +10,74 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroupItem, RadioGroup } from "~/components/ui/radio-group";
 import { cn } from "~/lib/utils";
+import useMaturityStore from "../states/maturity-state";
+import { useEffect, useState } from "react";
+import { useSummary } from "../data/get-summary";
+import { extractMonthAndYear } from "~/utils/helper";
+import { useAccount } from "wagmi";
 
 export default function FormBorrow() {
+	const { isConnected, address } = useAccount();
+	const {
+		isMarket,
+		rate: currentRate,
+		amount: maxAmount,
+		setStatusMarket,
+		maturity,
+	} = useMaturityStore();
+
+	const { DebtTokenAddress, CollateralAddress } = useSummary();
+
+	const [rate, setRate] = useState(0);
+	const [amount, setAmount] = useState(0);
+	const [collateral, setCollateral] = useState(0);
+
+	useEffect(() => {
+		setRate(currentRate);
+	}, [currentRate]);
+
+	const handleSelect = (value: string) => {
+		if (value === "market") {
+			setStatusMarket(true);
+		} else {
+			setStatusMarket(false);
+		}
+	};
+
+	const handlePlaceOrder = async () => {
+		const { month, year } = extractMonthAndYear(maturity || "");
+		const payload = {
+			debtToken: DebtTokenAddress as `0x${string}`,
+			collateralToken: CollateralAddress as `0x${string}`,
+			amount: BigInt(amount) * BigInt(10 ** 6),
+			collateralAmount: BigInt(collateral) * BigInt(10 ** 18), //decimal
+			rate: BigInt(rate * 10 ** 15),
+			maturity: BigInt(1748449527), // TODO:
+			maturityMonth: month,
+			maturityYear: BigInt(year),
+			lendingOrderType: 1,
+		};
+		console.log(payload);
+		/*
+		await approve({
+			amount: BigInt(collateralLimit) * BigInt(10 ** 18),
+			spender: pinjocRouterAddress,
+			address: state.token.collateralAddress as `0x${string}`,
+		});
+
+		await placeOrder(payload);
+    */
+	};
+
 	return (
 		<Card className="bg-transparent border-0 p-4 rounded-none">
 			<CardHeader className="px-0 py-2">
 				<CardTitle>
-					<RadioGroup defaultValue="market" className="gap-4">
+					<RadioGroup
+						value={isMarket ? "market" : "limit"}
+						onValueChange={handleSelect}
+						className="gap-4"
+					>
 						<div className="flex items-center gap-6">
 							<div className="flex items-center space-x-3">
 								<RadioGroupItem
@@ -57,7 +118,8 @@ export default function FormBorrow() {
 					<div className="w-full flex-1" />
 					<Input
 						id="fixed-rate-supply"
-						value="6.5"
+						value={rate}
+						onChange={(e) => setRate(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">%</span>
@@ -70,7 +132,8 @@ export default function FormBorrow() {
 					<div className="w-full flex-1" />
 					<Input
 						id="collateral"
-						value="1234"
+						value={collateral}
+						onChange={(e) => setCollateral(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">USDC</span>
@@ -92,18 +155,22 @@ export default function FormBorrow() {
 					</Label>
 					<div className="w-full flex-1" />
 					<Input
+						type="number"
 						id="borrow"
-						value="1234"
+						value={amount}
+						onChange={(e) => setAmount(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">USDC</span>
 				</div>
 				<div className="w-full flex justify-end">
 					<Button
+						type="button"
 						className={cn(
 							"rounded-xs text-xs px-1 py-0 font-normal bg-transparent text-gray-300",
 							"hover:bg-gray-700 hover:underline",
 						)}
+						onClick={() => setAmount(maxAmount)}
 					>
 						Max
 					</Button>
@@ -111,7 +178,13 @@ export default function FormBorrow() {
 				<br />
 			</CardContent>
 			<CardFooter className="p-0">
-				<Button className="rounded-xs w-full">Place Order</Button>
+				<Button
+					type="button"
+					onClick={() => handlePlaceOrder()}
+					className="rounded-xs w-full"
+				>
+					Place Order
+				</Button>
 			</CardFooter>
 		</Card>
 	);
