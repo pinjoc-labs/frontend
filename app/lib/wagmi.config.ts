@@ -5,22 +5,6 @@ import { sepolia } from "viem/chains";
 import { createConfig, http, injected } from "wagmi";
 import { toPrivyWallet } from "@privy-io/cross-app-connect/rainbow-kit";
 
-/*
-const projectId = import.meta.env.VITE_CONNECT_WALLET_PROJECT_ID;
-
-export const connectors = connectorsForWallets(
-  [
-    {
-      groupName: 'Recommended',
-      wallets: [metaMaskWallet, rabbyWallet],
-    },
-  ],
-  {
-    appName: 'Pinjoc',
-    projectId: projectId,
-  }
-);
-
 export const monadTestnet = {
   id: 10143,
   name: 'Monad Testnet',
@@ -35,9 +19,6 @@ export const monadTestnet = {
     },
   },
 } as const satisfies Chain;
-
-export const chains: readonly [Chain, ...Chain[]] = [monadTestnet];
-*/
 
 export const connectors = connectorsForWallets(
 	[
@@ -60,8 +41,10 @@ export const connectors = connectorsForWallets(
 	},
 );
 
-// TODO: change to monad when ready
-export const chains: readonly [Chain, ...Chain[]] = [sepolia];
-export const transports = {
-	[sepolia.id]: http(),
-};
+export const config = createConfig({
+  connectors,
+  chains: [monadTestnet],
+  transports: {
+    [monadTestnet.id]: http(),
+  },
+});
