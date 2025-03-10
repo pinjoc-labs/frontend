@@ -15,6 +15,9 @@ import { useEffect, useState } from "react";
 import { useSummary } from "../data/get-summary";
 import { extractMonthAndYear } from "~/utils/helper";
 import { useAccount } from "wagmi";
+import ConnectWallet from "~/components/derived/wagmi/button-connect";
+import { usePlaceOrder } from "~/hooks/use-place-order";
+import { useApprove } from "~/hooks/use-approve";
 
 export default function FormBorrow() {
 	const { isConnected, address } = useAccount();
@@ -32,6 +35,24 @@ export default function FormBorrow() {
 		DebtTokenSymbol,
 		CollateralTokenSymbol,
 	} = useSummary();
+
+	const { placeOrder, isPlacing } = usePlaceOrder({
+		onSuccess: (result) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
+	const { approve, isApproving } = useApprove({
+		onSuccess: (result) => {
+			console.log("Approve successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error approve:", error);
+		},
+	});
 
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
@@ -63,15 +84,15 @@ export default function FormBorrow() {
 			lendingOrderType: 1,
 		};
 		console.log(payload);
-		/*
+
 		await approve({
-			amount: BigInt(collateralLimit) * BigInt(10 ** 18),
-			spender: pinjocRouterAddress,
-			address: state.token.collateralAddress as `0x${string}`,
+			amount: BigInt(collateral) * BigInt(10 ** 18),
+			// spender: pinjocRouterAddress,
+			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
+			address: CollateralAddress as `0x${string}`,
 		});
 
 		await placeOrder(payload);
-    */
 	};
 
 	return (
@@ -187,13 +208,18 @@ export default function FormBorrow() {
 				<br />
 			</CardContent>
 			<CardFooter className="p-0">
-				<Button
-					type="button"
-					onClick={() => handlePlaceOrder()}
-					className="rounded-xs w-full"
-				>
-					Place Order
-				</Button>
+				{isConnected ? (
+					<Button
+						className="rounded-xs w-full cursor-pointer"
+						onClick={() => handlePlaceOrder()}
+					>
+						{isPlacing || isApproving ? "Loading" : "Place Order"}
+					</Button>
+				) : (
+					<div className=" w-full">
+						<ConnectWallet className="rounded-xs w-full cursor-pointer" />
+					</div>
+				)}
 			</CardFooter>
 		</Card>
 	);

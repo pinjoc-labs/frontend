@@ -14,6 +14,10 @@ import { cn } from "~/lib/utils";
 import useMaturityStore from "../states/maturity-state";
 import { useSummary } from "../data/get-summary";
 import { useEffect, useState } from "react";
+import { usePlaceOrder } from "~/hooks/use-place-order";
+import { useApprove } from "~/hooks/use-approve";
+import ConnectWallet from "~/components/derived/wagmi/button-connect";
+import { extractMonthAndYear } from "~/utils/helper";
 
 export default function FormSupply() {
 	const balance = 12345;
@@ -33,6 +37,24 @@ export default function FormSupply() {
 		CollateralTokenSymbol,
 	} = useSummary();
 
+	const { placeOrder, isPlacing } = usePlaceOrder({
+		onSuccess: (result) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
+	const { approve, isApproving } = useApprove({
+		onSuccess: (result) => {
+			console.log("Approve successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error approve:", error);
+		},
+	});
+
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
 	const [collateral, setCollateral] = useState(0);
@@ -47,6 +69,26 @@ export default function FormSupply() {
 		} else {
 			setStatusMarket(false);
 		}
+	};
+	const handlePlaceOrder = async () => {
+		const { month, year } = extractMonthAndYear(maturity || "");
+		await approve({
+			amount: BigInt(amount) * BigInt(10 ** 6),
+			// spender: pinjocRouterAddress,
+			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
+			address: DebtTokenAddress as `0x${string}`,
+		});
+		await placeOrder({
+			debtToken: DebtTokenAddress as `0x${string}`,
+			collateralToken: CollateralAddress as `0x${string}`,
+			amount: BigInt(amount) * BigInt(10 ** 6),
+			collateralAmount: BigInt(0),
+			rate: BigInt(Math.floor(currentRate * 10 ** 16)),
+			maturity: BigInt(1748449527),
+			maturityMonth: month,
+			maturityYear: BigInt(Number(year)),
+			lendingOrderType: 0,
+		});
 	};
 
 	return (
@@ -143,7 +185,18 @@ export default function FormSupply() {
 				<br />
 			</CardContent>
 			<CardFooter className="p-0">
-				<Button className="rounded-xs w-full">Place Order</Button>
+				{isConnected ? (
+					<Button
+						className="rounded-xs w-full cursor-pointer"
+						onClick={() => handlePlaceOrder()}
+					>
+						{isPlacing || isApproving ? "Loading" : "Place Order"}
+					</Button>
+				) : (
+					<div className=" w-full">
+						<ConnectWallet className="rounded-xs w-full cursor-pointer" />
+					</div>
+				)}
 			</CardFooter>
 		</Card>
 	);
