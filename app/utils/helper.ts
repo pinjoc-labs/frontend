@@ -24,3 +24,23 @@ export function separateOrders(input: OrdersType) {
 
 	return { DataBorrow, DataLend };
 }
+
+export function getMaturityTimestamp(monthName: string, year: number): number {
+	const monthNamesToNumbers: { [key: string]: number } = {
+		JAN: 0,
+		FEB: 1,
+		MAR: 2,
+		APR: 3,
+		MAY: 4,
+		JUN: 5,
+		JUL: 6,
+		AUG: 7,
+		SEP: 8,
+		OCT: 9,
+		NOV: 10,
+		DEC: 11,
+	};
+	const monthNumber: number = monthNamesToNumbers[monthName.toUpperCase()];
+	const maturityDate: Date = new Date(year, monthNumber, 1);
+	return Math.floor(maturityDate.getTime() / 1000);
+}

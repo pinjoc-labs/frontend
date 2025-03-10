@@ -13,8 +13,12 @@ import { cn } from "~/lib/utils";
 import useMaturityStore from "../states/maturity-state";
 import { useEffect, useState } from "react";
 import { useSummary } from "../data/get-summary";
-import { extractMonthAndYear } from "~/utils/helper";
+import { extractMonthAndYear, getMaturityTimestamp } from "~/utils/helper";
 import { useAccount } from "wagmi";
+import ConnectWallet from "~/components/derived/wagmi/button-connect";
+import { useBalance } from "~/hooks/use-balance";
+import { usePlaceOrder } from "~/hooks/use-place-order";
+import { useApprove } from "~/hooks/use-approve";
 
 export default function FormBorrow() {
 	const { isConnected, address } = useAccount();
@@ -49,6 +53,24 @@ export default function FormBorrow() {
 		}
 	};
 
+	const { placeOrder, isPlacing } = usePlaceOrder({
+		onSuccess: (result) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
+	const { isApproving, approve } = useApprove({
+		onSuccess: (result: any) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error: any) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
 	const handlePlaceOrder = async () => {
 		const { month, year } = extractMonthAndYear(maturity || "");
 		const payload = {
@@ -57,22 +79,21 @@ export default function FormBorrow() {
 			amount: BigInt(amount) * BigInt(10 ** 6),
 			collateralAmount: BigInt(collateral) * BigInt(10 ** 18), //decimal
 			rate: BigInt(rate * 10 ** 15),
-			maturity: BigInt(1748449527), // TODO:
+			maturity: BigInt(getMaturityTimestamp(month, +year)), // TODO:
 			maturityMonth: month,
 			maturityYear: BigInt(year),
 			lendingOrderType: 1,
 		};
-		console.log(payload);
-		/*
+
 		await approve({
-			amount: BigInt(collateralLimit) * BigInt(10 ** 18),
-			spender: pinjocRouterAddress,
-			address: state.token.collateralAddress as `0x${string}`,
+			amount: BigInt(collateral) * BigInt(10 ** 18),
+			spender: "" as `0x${string}`, // TODO: give addresss
+			address: CollateralAddress as `0x${string}`,
 		});
 
 		await placeOrder(payload);
-    */
 	};
+	const { balance } = useBalance(address!, DebtTokenAddress as `0x${string}`);
 
 	return (
 		<Card className="bg-transparent border-0 p-4 rounded-none">
@@ -137,6 +158,8 @@ export default function FormBorrow() {
 					<div className="w-full flex-1" />
 					<Input
 						id="collateral"
+						type="number"
+						max={Number(balance)}
 						value={collateral}
 						onChange={(e) => setCollateral(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
@@ -187,13 +210,19 @@ export default function FormBorrow() {
 				<br />
 			</CardContent>
 			<CardFooter className="p-0">
-				<Button
-					type="button"
-					onClick={() => handlePlaceOrder()}
-					className="rounded-xs w-full"
-				>
-					Place Order
-				</Button>
+				{isConnected ? (
+					<Button
+						type="button"
+						onClick={() => handlePlaceOrder()}
+						className="rounded-xs w-full"
+					>
+						Place Order
+					</Button>
+				) : (
+					<div className="flex items-center justify-center">
+						<ConnectWallet className="rounded-xs w-full flex-1" />
+					</div>
+				)}
 			</CardFooter>
 		</Card>
 	);

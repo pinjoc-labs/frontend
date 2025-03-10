@@ -87,7 +87,7 @@ export default function Orderbook() {
 				</div>
 				<div className="bg-gray-700 my-[3px] ">
 					<div className="w-full text-sm px-3 py-[2px] tex-base font-semibold flex items-center justify-between">
-						{bestRates ? <span>{bestRates.Rate}</span> : <span />}
+						{bestRates ? <span>{`${bestRates.Rate} %`}</span> : <span />}
 					</div>
 				</div>
 				<div className="flex flex-1 h-fit flex-col justify-start overflow-y-hidden">
