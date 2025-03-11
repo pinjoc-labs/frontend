@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { cn } from "~/lib/utils";
-import FormSupply from "./form-supply";
-import FormBorrow from "./form-borrow";
+import FormSell from "./form-sell";
+import FormBuy from "./form-buy";
 
 export function ActionTab() {
 	return (
@@ -68,11 +68,11 @@ export function ActionTab() {
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent className="bg-transparent" value="supply">
-				<FormSupply />
+				<FormSell />
 			</TabsContent>
 
 			<TabsContent className="bg-transparent" value="borrow">
-				<FormBorrow />
+				<FormBuy />
 			</TabsContent>
 		</Tabs>
 	);
