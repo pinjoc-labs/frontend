@@ -12,6 +12,11 @@
 			"unsafeParameterDecoratorsEnabled": true
 		}
 	},
+  "css": {
+    "linter": {
+      "enabled": false
+    }
+  },
 	"linter": {
 		"enabled": true,
 		"rules": {
