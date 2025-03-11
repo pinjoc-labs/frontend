@@ -14,17 +14,50 @@ import { cn } from "~/lib/utils";
 import useMaturityStore from "../states/maturity-state";
 import { useSummary } from "../data/get-summary";
 import { useEffect, useState } from "react";
-import { useBalance } from "~/hooks/use-balance";
+import { usePlaceOrder } from "~/hooks/use-place-order";
+import { useApprove } from "~/hooks/use-approve";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
+import { extractMonthAndYear } from "~/utils/helper";
 
 export default function FormSupply() {
+	const balance = 12345;
 	const { isConnected, address } = useAccount();
-	const { isMarket, rate: currentRate, setStatusMarket } = useMaturityStore();
+	const {
+		isMarket,
+		rate: currentRate,
+		amount: maxAmount,
+		setStatusMarket,
+		maturity,
+	} = useMaturityStore();
 
-	const { DebtTokenSymbol, DebtTokenAddress } = useSummary();
+	const {
+		DebtTokenAddress,
+		CollateralAddress,
+		DebtTokenSymbol,
+		CollateralTokenSymbol,
+	} = useSummary();
+
+	const { placeOrder, isPlacing } = usePlaceOrder({
+		onSuccess: (result) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
+	const { approve, isApproving } = useApprove({
+		onSuccess: (result) => {
+			console.log("Approve successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error approve:", error);
+		},
+	});
 
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
+	const [collateral, setCollateral] = useState(0);
 
 	useEffect(() => {
 		setRate(currentRate);
@@ -37,7 +70,26 @@ export default function FormSupply() {
 			setStatusMarket(false);
 		}
 	};
-	const { balance } = useBalance(address!, DebtTokenAddress as `0x${string}`);
+	const handlePlaceOrder = async () => {
+		const { month, year } = extractMonthAndYear(maturity || "");
+		await approve({
+			amount: BigInt(amount) * BigInt(10 ** 6),
+			// spender: pinjocRouterAddress,
+			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
+			address: DebtTokenAddress as `0x${string}`,
+		});
+		await placeOrder({
+			debtToken: DebtTokenAddress as `0x${string}`,
+			collateralToken: CollateralAddress as `0x${string}`,
+			amount: BigInt(amount) * BigInt(10 ** 6),
+			collateralAmount: BigInt(0),
+			rate: BigInt(Math.floor(currentRate * 10 ** 16)),
+			maturity: BigInt(1748449527),
+			maturityMonth: month,
+			maturityYear: BigInt(Number(year)),
+			lendingOrderType: 0,
+		});
+	};
 
 	return (
 		<Card className="bg-transparent border-0 p-4 rounded-none">
@@ -83,7 +135,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${balance ?? 0} ${DebtTokenSymbol}`}</p>
+					<p className="text-base text-white font-semibold">{`${balance} ${DebtTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
@@ -111,7 +163,7 @@ export default function FormSupply() {
 						id="supply-supply"
 						value={amount}
 						onChange={(e) => {
-							if (+e.target.value > (balance || 0)) return;
+							if (+e.target.value > balance) return;
 							setAmount(Number(e.target.value));
 						}}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
@@ -134,10 +186,15 @@ export default function FormSupply() {
 			</CardContent>
 			<CardFooter className="p-0">
 				{isConnected ? (
-					<Button className="rounded-xs w-full">Place Order</Button>
+					<Button
+						className="rounded-xs w-full cursor-pointer"
+						onClick={() => handlePlaceOrder()}
+					>
+						{isPlacing || isApproving ? "Loading" : "Place Order"}
+					</Button>
 				) : (
-					<div className="flex items-center justify-center">
-						<ConnectWallet className="rounded-xs w-full flex-1" />
+					<div className=" w-full">
+						<ConnectWallet className="rounded-xs w-full cursor-pointer" />
 					</div>
 				)}
 			</CardFooter>

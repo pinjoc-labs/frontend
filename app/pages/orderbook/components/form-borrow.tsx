@@ -13,10 +13,9 @@ import { cn } from "~/lib/utils";
 import useMaturityStore from "../states/maturity-state";
 import { useEffect, useState } from "react";
 import { useSummary } from "../data/get-summary";
-import { extractMonthAndYear, getMaturityTimestamp } from "~/utils/helper";
+import { extractMonthAndYear } from "~/utils/helper";
 import { useAccount } from "wagmi";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
-import { useBalance } from "~/hooks/use-balance";
 import { usePlaceOrder } from "~/hooks/use-place-order";
 import { useApprove } from "~/hooks/use-approve";
 
@@ -37,6 +36,24 @@ export default function FormBorrow() {
 		CollateralTokenSymbol,
 	} = useSummary();
 
+	const { placeOrder, isPlacing } = usePlaceOrder({
+		onSuccess: (result) => {
+			console.log("Order placed successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error placing order:", error);
+		},
+	});
+
+	const { approve, isApproving } = useApprove({
+		onSuccess: (result) => {
+			console.log("Approve successfully:", result);
+		},
+		onError: (error) => {
+			console.error("Error approve:", error);
+		},
+	});
+
 	const [rate, setRate] = useState(0);
 	const [amount, setAmount] = useState(0);
 	const [collateral, setCollateral] = useState(0);
@@ -53,24 +70,6 @@ export default function FormBorrow() {
 		}
 	};
 
-	const { placeOrder, isPlacing } = usePlaceOrder({
-		onSuccess: (result) => {
-			console.log("Order placed successfully:", result);
-		},
-		onError: (error) => {
-			console.error("Error placing order:", error);
-		},
-	});
-
-	const { isApproving, approve } = useApprove({
-		onSuccess: (result: any) => {
-			console.log("Order placed successfully:", result);
-		},
-		onError: (error: any) => {
-			console.error("Error placing order:", error);
-		},
-	});
-
 	const handlePlaceOrder = async () => {
 		const { month, year } = extractMonthAndYear(maturity || "");
 		const payload = {
@@ -79,21 +78,22 @@ export default function FormBorrow() {
 			amount: BigInt(amount) * BigInt(10 ** 6),
 			collateralAmount: BigInt(collateral) * BigInt(10 ** 18), //decimal
 			rate: BigInt(rate * 10 ** 15),
-			maturity: BigInt(getMaturityTimestamp(month, +year)), // TODO:
+			maturity: BigInt(1748449527), // TODO:
 			maturityMonth: month,
 			maturityYear: BigInt(year),
 			lendingOrderType: 1,
 		};
+		console.log(payload);
 
 		await approve({
 			amount: BigInt(collateral) * BigInt(10 ** 18),
-			spender: "" as `0x${string}`, // TODO: give addresss
+			// spender: pinjocRouterAddress,
+			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
 			address: CollateralAddress as `0x${string}`,
 		});
 
 		await placeOrder(payload);
 	};
-	const { balance } = useBalance(address!, DebtTokenAddress as `0x${string}`);
 
 	return (
 		<Card className="bg-transparent border-0 p-4 rounded-none">
@@ -158,8 +158,6 @@ export default function FormBorrow() {
 					<div className="w-full flex-1" />
 					<Input
 						id="collateral"
-						type="number"
-						max={Number(balance)}
 						value={collateral}
 						onChange={(e) => setCollateral(Number(e.target.value))}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
@@ -212,15 +210,14 @@ export default function FormBorrow() {
 			<CardFooter className="p-0">
 				{isConnected ? (
 					<Button
-						type="button"
+						className="rounded-xs w-full cursor-pointer"
 						onClick={() => handlePlaceOrder()}
-						className="rounded-xs w-full"
 					>
-						Place Order
+						{isPlacing || isApproving ? "Loading" : "Place Order"}
 					</Button>
 				) : (
-					<div className="flex items-center justify-center">
-						<ConnectWallet className="rounded-xs w-full flex-1" />
+					<div className=" w-full">
+						<ConnectWallet className="rounded-xs w-full cursor-pointer" />
 					</div>
 				)}
 			</CardFooter>
