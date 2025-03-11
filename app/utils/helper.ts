@@ -24,3 +24,68 @@ export function separateOrders(input: OrdersType) {
 
 	return { DataBorrow, DataLend };
 }
+
+export function getMaturityTimestamp(monthName: string, year: number): number {
+	const monthNamesToNumbers: { [key: string]: number } = {
+		JAN: 0,
+		FEB: 1,
+		MAR: 2,
+		APR: 3,
+		MAY: 4,
+		JUN: 5,
+		JUL: 6,
+		AUG: 7,
+		SEP: 8,
+		OCT: 9,
+		NOV: 10,
+		DEC: 11,
+	};
+	const monthNumber: number = monthNamesToNumbers[monthName.toUpperCase()];
+	const maturityDate: Date = new Date(year, monthNumber, 1);
+	return Math.floor(maturityDate.getTime() / 1000);
+}
+
+export function getMonthRange(
+	range: string,
+): { year: number; month: string }[] {
+	const [start, end] = range.split(" ~ ");
+	const months: string[] = [
+		"JAN",
+		"FEB",
+		"MAR",
+		"APR",
+		"MAY",
+		"JUN",
+		"JUL",
+		"AUG",
+		"SEP",
+		"OCT",
+		"NOV",
+		"DEC",
+	];
+
+	const [startMonth, startYear] = start.split(" ");
+	const [endMonth, endYear] = end.split(" ");
+
+	let startIdx: number = months.indexOf(startMonth);
+	const endIdx: number = months.indexOf(endMonth);
+	let currentYear: number = Number.parseInt(startYear, 10);
+	const endYearNum: number = Number.parseInt(endYear, 10);
+
+	const result: { year: number; month: string }[] = [];
+
+	while (
+		currentYear < endYearNum ||
+		(currentYear === endYearNum && startIdx <= endIdx)
+	) {
+		result.push({ year: currentYear, month: months[startIdx] });
+
+		startIdx++;
+		if (startIdx === 12) {
+			startIdx = 0;
+			currentYear++;
+		}
+	}
+
+	return result;
+}

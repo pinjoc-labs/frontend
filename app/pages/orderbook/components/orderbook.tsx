@@ -9,14 +9,8 @@ import { useEffect, useState } from "react";
 
 export default function Orderbook() {
 	const { DebtTokenAddress, CollateralAddress } = useSummary();
-	const {
-		bestRate,
-		maturity,
-		fetchMaturities,
-		setAmount,
-		setRate,
-		setBestAmount,
-	} = useMaturityStore();
+	const { bestRate, maturity, setAmount, setRate, setBestAmount } =
+		useMaturityStore();
 	const { data } = useClob({
 		collateral_address: CollateralAddress,
 		debt_token_address: DebtTokenAddress,
@@ -26,10 +20,6 @@ export default function Orderbook() {
 	const [dataBorrow, setDataBorrow] = useState<OrderType[]>([]);
 	const [dataLend, setDataLend] = useState<OrderType[]>([]);
 	const [bestRates, setBestRates] = useState<OrderType | null>(null);
-
-	useEffect(() => {
-		fetchMaturities(CollateralAddress, DebtTokenAddress);
-	}, [CollateralAddress, DebtTokenAddress]);
 
 	useEffect(() => {
 		const indexBestRate = (data || []).findIndex((item: OrderType) => {
@@ -87,7 +77,7 @@ export default function Orderbook() {
 				</div>
 				<div className="bg-gray-700 my-[3px] ">
 					<div className="w-full text-sm px-3 py-[2px] tex-base font-semibold flex items-center justify-between">
-						{bestRates ? <span>{bestRates.Rate}</span> : <span />}
+						{bestRates ? <span>{`${bestRates.Rate} %`}</span> : <span />}
 					</div>
 				</div>
 				<div className="flex flex-1 h-fit flex-col justify-start overflow-y-hidden">

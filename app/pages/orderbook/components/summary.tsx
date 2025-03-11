@@ -1,5 +1,8 @@
 import { TokenIcon } from "~/components/derived/wagmi/token-icon";
 import { useSummary } from "../data/get-summary";
+import { useBestRates } from "../data/get-best-rate";
+import { useEffect } from "react";
+import useMaturityStore from "../states/maturity-state";
 
 export default function Summary() {
 	const {
@@ -9,11 +12,25 @@ export default function Summary() {
 		RateRange,
 		DebtTokenName,
 		DebtTokenSymbol,
+		DebtTokenAddress,
 		DebtTokenIcon,
 		CollateralTokenName,
+		CollateralAddress,
 		CollateralTokenSymbol,
 		CollateralTokenIcon,
 	} = useSummary();
+
+	const { data } = useBestRates({
+		collateral_address: CollateralAddress,
+		debt_token_address: DebtTokenAddress,
+	});
+
+	const { setMaturities } = useMaturityStore();
+
+	useEffect(() => {
+		setMaturities(data);
+	}, [data]);
+
 	return (
 		<div className="flex items-center justify-start gap-x-10">
 			<div className="flex gap-x-6 items-center">
