@@ -15,7 +15,9 @@ import useMaturityStore from "../states/maturity-state";
 import { useSummary } from "../data/get-summary";
 import { useAccount } from "wagmi";
 
-export default function FormBorrow() {
+/* BUY */
+export default function FormBuy() {
+	const balance = 1234; // TODO: change this
 	const { isMarket, setStatusMarket } = useMaturityStore();
 	const { isConnected, address } = useAccount();
 
@@ -68,16 +70,13 @@ export default function FormBorrow() {
 			</CardHeader>
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
-					<Label className="text-sm text-gray-400" htmlFor="fixed-rate-supply">
-						Rate
-					</Label>
-					<div className="w-full flex-1" />
-					<Input
-						id="fixed-rate-supply"
-						defaultValue="123"
-						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
-					/>
-					<span className="text-base text-white font-semibold">%</span>
+					<p className="text-sm text-gray-400">Available On Wallet</p>
+					<p className="text-base text-white font-semibold">{`${balance} ${BaseTokenSymbol}`}</p>
+				</div>
+				<br />
+				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
+					<p className="text-sm text-gray-400">Rate</p>
+					<p className="text-base text-white font-semibold">{`${6.5}%`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600">
