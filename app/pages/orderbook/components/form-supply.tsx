@@ -18,6 +18,8 @@ import { usePlaceOrder } from "~/hooks/use-place-order";
 import { useApprove } from "~/hooks/use-approve";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
 import { extractMonthAndYear } from "~/utils/helper";
+import { parseUnits } from "viem"
+import { pinjocRouterAddress } from "~/abis/token-abi";
 
 export default function FormSupply() {
 	const balance = 12345;
@@ -55,12 +57,12 @@ export default function FormSupply() {
 		},
 	});
 
-	const [rate, setRate] = useState(0);
-	const [amount, setAmount] = useState(0);
+	const [rate, setRate] = useState<string>("");
+	const [amount, setAmount] = useState<string>("");
 	const [collateral, setCollateral] = useState(0);
 
 	useEffect(() => {
-		setRate(currentRate);
+		setRate(currentRate.toString());
 	}, [currentRate]);
 
 	const handleSelect = (value: string) => {
@@ -73,17 +75,19 @@ export default function FormSupply() {
 	const handlePlaceOrder = async () => {
 		const { month, year } = extractMonthAndYear(maturity || "");
 		await approve({
-			amount: BigInt(amount) * BigInt(10 ** 6),
+			// amount: BigInt(amount) * BigInt(10 ** 6),
+			amount: parseUnits(amount, 6),
 			// spender: pinjocRouterAddress,
-			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
+			spender: pinjocRouterAddress,
 			address: DebtTokenAddress as `0x${string}`,
 		});
 		await placeOrder({
 			debtToken: DebtTokenAddress as `0x${string}`,
 			collateralToken: CollateralAddress as `0x${string}`,
-			amount: BigInt(amount) * BigInt(10 ** 6),
+			amount: parseUnits(amount, 6),
 			collateralAmount: BigInt(0),
-			rate: BigInt(Math.floor(currentRate * 10 ** 16)),
+			// rate: BigInt(Math.floor(currentRate * 10 ** 16)),
+			rate: parseUnits(rate, 16),
 			maturity: BigInt(1748449527),
 			maturityMonth: month,
 			maturityYear: BigInt(Number(year)),
@@ -147,7 +151,7 @@ export default function FormSupply() {
 						id="fixed-rate-supply"
 						value={rate}
 						type="number"
-						onChange={(e) => setRate(Number(e.target.value))}
+						onChange={(e) => setRate(e.target.value)}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">%</span>
@@ -162,9 +166,11 @@ export default function FormSupply() {
 						type="number"
 						id="supply-supply"
 						value={amount}
+						step="0.0001"
+						min="0"
 						onChange={(e) => {
 							if (+e.target.value > balance) return;
-							setAmount(Number(e.target.value));
+							setAmount(e.target.value);
 						}}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>

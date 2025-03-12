@@ -18,6 +18,8 @@ import { useAccount } from "wagmi";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
 import { usePlaceOrder } from "~/hooks/use-place-order";
 import { useApprove } from "~/hooks/use-approve";
+import { parseUnits } from "viem"
+import { pinjocRouterAddress } from "~/abis/token-abi";
 
 export default function FormBorrow() {
 	const { isConnected, address } = useAccount();
@@ -54,12 +56,12 @@ export default function FormBorrow() {
 		},
 	});
 
-	const [rate, setRate] = useState(0);
-	const [amount, setAmount] = useState(0);
-	const [collateral, setCollateral] = useState(0);
+	const [rate, setRate] = useState<string>("");
+	const [amount, setAmount] = useState<string>("");
+	const [collateral, setCollateral] = useState<string>("");
 
 	useEffect(() => {
-		setRate(currentRate);
+		setRate(currentRate.toString());
 	}, [currentRate]);
 
 	const handleSelect = (value: string) => {
@@ -75,20 +77,20 @@ export default function FormBorrow() {
 		const payload = {
 			debtToken: DebtTokenAddress as `0x${string}`,
 			collateralToken: CollateralAddress as `0x${string}`,
-			amount: BigInt(amount) * BigInt(10 ** 6),
-			collateralAmount: BigInt(collateral) * BigInt(10 ** 18), //decimal
-			rate: BigInt(rate * 10 ** 15),
+			amount: parseUnits(amount, 6),
+			// collateralAmount: BigInt(collateral) * BigInt(10 ** 18), 
+			collateralAmount: parseUnits(collateral, 18),
+			rate: parseUnits(rate, 16),
 			maturity: BigInt(1748449527), // TODO:
 			maturityMonth: month,
 			maturityYear: BigInt(year),
 			lendingOrderType: 1,
 		};
-		console.log(payload);
 
 		await approve({
-			amount: BigInt(collateral) * BigInt(10 ** 18),
+			amount: parseUnits(collateral, 18),
 			// spender: pinjocRouterAddress,
-			spender: "0xde60a2697cb6c4e557863b0476d51921a0c50172", // pinjocRouterAddress Rise,
+			spender: pinjocRouterAddress,
 			address: CollateralAddress as `0x${string}`,
 		});
 
@@ -145,7 +147,8 @@ export default function FormBorrow() {
 					<Input
 						id="fixed-rate-supply"
 						value={rate}
-						onChange={(e) => setRate(Number(e.target.value))}
+						min="0"
+						onChange={(e) => setRate(e.target.value)}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">%</span>
@@ -159,7 +162,9 @@ export default function FormBorrow() {
 					<Input
 						id="collateral"
 						value={collateral}
-						onChange={(e) => setCollateral(Number(e.target.value))}
+						step="0.0001"
+						min="0"
+						onChange={(e) => setCollateral(e.target.value)}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">
@@ -186,7 +191,9 @@ export default function FormBorrow() {
 						type="number"
 						id="borrow"
 						value={amount}
-						onChange={(e) => setAmount(Number(e.target.value))}
+						step="0.0001"
+						min="0"
+						onChange={(e) => setAmount(e.target.value)}
 						className="w-36 text-right border-0 text-base text-white font-semibold bg-transparent"
 					/>
 					<span className="text-base text-white font-semibold">
@@ -200,7 +207,7 @@ export default function FormBorrow() {
 							"rounded-xs text-xs px-1 py-0 font-normal bg-transparent text-gray-300",
 							"hover:bg-gray-700 hover:underline",
 						)}
-						onClick={() => setAmount(maxAmount)}
+						onClick={() => setAmount(maxAmount.toString())}
 					>
 						Max
 					</Button>

@@ -1,5 +1,5 @@
 export const pinjocRouterAddress =
-	"0xde60a2697cb6c4e557863b0476d51921a0c50172" as const;
+	"0xDf7dC6ca55ab4FcBFd8bea12d44f6CCB1A87C1Cb" as const;
 
 export const tokenAbi = [
 	{

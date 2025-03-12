@@ -44,9 +44,9 @@ export const placeOrderAbi = [
 				internalType: "uint256",
 			},
 			{
-				name: "_lendingOrderType",
+				name: "_side",
 				type: "uint8",
-				internalType: "enum LendingOrderType",
+				// internalType: "enum LendingOrderType",
 			},
 		],
 		outputs: [],
