@@ -2,6 +2,7 @@ import { TokenIcon } from "~/components/derived/wagmi/token-icon";
 import { useSummary } from "../data/get-summary";
 import { useBestRates } from "../data/get-best-rate";
 import { useEffect } from "react";
+import { formatUSD } from "~/utils/helper";
 import useMaturityStore from "../states/maturity-state";
 
 export default function Summary() {
@@ -46,8 +47,8 @@ export default function Summary() {
 				/>
 				<h2 className="font-semibold text-xl">{`${DebtTokenSymbol}/${CollateralTokenSymbol}`}</h2>
 			</div>
-			<SummaryItem label="Lending Vault" value={String(LendingVault)} />
-			<SummaryItem label="Borrow Vault" value={String(BorrowVault)} />
+			<SummaryItem label="Lending Vault" value={formatUSD(LendingVault)} />
+			<SummaryItem label="Borrow Vault" value={formatUSD(BorrowVault)} />
 			<SummaryItem label="Maturity" value={MaturityRange} />
 			<SummaryItem label="Rate" value={RateRange} />
 		</div>
