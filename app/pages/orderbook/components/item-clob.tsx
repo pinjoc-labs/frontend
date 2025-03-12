@@ -37,7 +37,7 @@ export default function ItemClob(props: OrderType) {
 				{`${props.Rate}%`}
 			</span>
 			<span className="text-white bg-transparent border-none outline-none hover:font-bold">
-				{formatUSD(props.AvailableToken)}
+				{`${formatUSD(props.AvailableToken, false)} USDC`}
 			</span>
 		</button>
 	);

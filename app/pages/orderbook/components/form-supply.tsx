@@ -139,7 +139,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${formatUSD(balance)} ${DebtTokenSymbol}`}</p>
+					<p className="text-base text-white font-semibold">{`${formatUSD(balance, false)} ${DebtTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">

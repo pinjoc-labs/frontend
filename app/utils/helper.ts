@@ -90,11 +90,13 @@ export function getMonthRange(
 	return result;
 }
 
-export const formatUSD = (value: number) => {
-	return new Intl.NumberFormat("en-US", {
+export const formatUSD = (value: number, withPrefix = true) => {
+	const formatted = new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency: "USD",
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(value);
+
+	return withPrefix ? formatted : formatted.replace("$", "").trim();
 };
