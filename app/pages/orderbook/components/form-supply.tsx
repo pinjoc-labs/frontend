@@ -19,11 +19,13 @@ import { useApprove } from "~/hooks/use-approve";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
 import { extractMonthAndYear, formatUSD } from "~/utils/helper";
 import { parseUnits } from "viem"
+import { useBalance } from "~/hooks/use-balance";
 import { pinjocRouterAddress } from "~/abis/token-abi";
 
 export default function FormSupply() {
 	const balance = 12345;
 	const { isConnected, address } = useAccount();
+
 	const {
 		isMarket,
 		rate: currentRate,
@@ -60,6 +62,12 @@ export default function FormSupply() {
 	const [rate, setRate] = useState<string>("");
 	const [amount, setAmount] = useState<string>("");
 	const [collateral, setCollateral] = useState(0);
+
+	const {
+		balance: amountBalance,
+	} = useBalance(address!, DebtTokenAddress as `0x${string}`);
+
+
 
 	useEffect(() => {
 		setRate(currentRate.toString());
@@ -139,7 +147,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${formatUSD(balance, false)} ${DebtTokenSymbol}`}</p>
+					<p className="text-base text-white font-semibold">{`${amountBalance?.toString() ?? 0} ${DebtTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
