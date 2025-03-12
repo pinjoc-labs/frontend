@@ -19,6 +19,7 @@ import ConnectWallet from "~/components/derived/wagmi/button-connect";
 import { usePlaceOrder } from "~/hooks/use-place-order";
 import { useApprove } from "~/hooks/use-approve";
 import { parseUnits } from "viem"
+import { useBalance } from "~/hooks/use-balance";
 import { pinjocRouterAddress } from "~/abis/token-abi";
 
 export default function FormBorrow() {
@@ -60,8 +61,13 @@ export default function FormBorrow() {
 	const [amount, setAmount] = useState<string>("");
 	const [collateral, setCollateral] = useState<string>("");
 
+	const {
+		balance: collateralBalance,
+	} = useBalance(address!, CollateralAddress as `0x${string}`);
+
 	useEffect(() => {
 		setRate(currentRate.toString());
+		setAmount("")
 	}, [currentRate]);
 
 	const handleSelect = (value: string) => {
@@ -171,12 +177,14 @@ export default function FormBorrow() {
 						{CollateralTokenSymbol}
 					</span>
 				</div>
-				<div className="w-full flex justify-end">
+				<div className="w-full flex items-center justify-between">
+					<p className="text-xs text-gray-300">{`${collateralBalance?.toString() ?? 0} ${CollateralTokenSymbol}`}</p>
 					<Button
 						className={cn(
 							"rounded-xs text-xs px-1 py-0 font-normal bg-transparent text-gray-300",
 							"hover:bg-gray-700 hover:underline",
 						)}
+						onClick={() => setCollateral(collateralBalance?.toString() ?? "0")}
 					>
 						Max
 					</Button>
@@ -200,7 +208,8 @@ export default function FormBorrow() {
 						{DebtTokenSymbol}
 					</span>
 				</div>
-				<div className="w-full flex justify-end">
+				<div className="w-full flex items-center justify-between">
+					<p className="text-xs text-gray-300">{`${maxAmount?.toString() ?? 0} ${DebtTokenSymbol}`}</p>
 					<Button
 						type="button"
 						className={cn(

@@ -144,12 +144,12 @@ export default function FormSupply() {
 					</RadioGroup>
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="px-0 py-4">
-				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
+			<CardContent className="px-0 pb-4">
+				{/* <div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
 					<p className="text-base text-white font-semibold">{`${amountBalance?.toString() ?? 0} ${DebtTokenSymbol}`}</p>
-				</div>
-				<br />
+				</div> */}
+				{/* <br /> */}
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<Label className="text-sm text-gray-400" htmlFor="fixed-rate-supply">
 						Fixed Rate
@@ -186,12 +186,14 @@ export default function FormSupply() {
 						{DebtTokenSymbol}
 					</span>
 				</div>
-				<div className="w-full flex justify-end">
+				<div className="w-full flex justify-between items-center">
+					<p className="text-xs text-gray-300">{`${amountBalance?.toString() ?? 0} ${DebtTokenSymbol}`}</p>
 					<Button
 						className={cn(
 							"rounded-xs text-xs px-1 py-0 font-normal bg-transparent text-gray-300",
 							"hover:bg-gray-700 hover:underline",
 						)}
+						onClick={() => setAmount(amountBalance?.toString() ?? "0")}
 					>
 						Max
 					</Button>
