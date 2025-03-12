@@ -188,6 +188,19 @@ export default function FormSupply() {
 						Max
 					</Button>
 				</div>
+				<div className="flex justify-between items-center my-6">
+					<Label htmlFor="autoroll">Auto-roll Supply</Label>
+					<RadioGroup defaultValue="off" className="w-fit flex justify-end">
+						<div className="flex items-center space-x-2">
+							<RadioGroupItem value="on" id="on" />
+							<Label htmlFor="on">On</Label>
+						</div>
+						<div className="flex items-center space-x-2">
+							<RadioGroupItem value="off" id="off" />
+							<Label htmlFor="off">Of</Label>
+						</div>
+					</RadioGroup>
+				</div>
 				<br />
 			</CardContent>
 			<CardFooter className="p-0">
