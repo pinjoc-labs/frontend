@@ -197,7 +197,7 @@ export default function FormSupply() {
 						</div>
 						<div className="flex items-center space-x-2">
 							<RadioGroupItem value="off" id="off" />
-							<Label htmlFor="off">Of</Label>
+							<Label htmlFor="off">Off</Label>
 						</div>
 					</RadioGroup>
 				</div>
