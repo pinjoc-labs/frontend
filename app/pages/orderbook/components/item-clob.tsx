@@ -25,7 +25,7 @@ export default function ItemClob(props: OrderType) {
 					: "bg-red-500/10",
 			)}
 				style={{
-					width: `${props.Rate}%`,
+					width: `${(props.AvailableToken / 300_000) * 100}%`,
 				}} />
 			<span
 				className={cn(

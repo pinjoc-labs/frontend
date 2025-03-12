@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { usePlaceOrder } from "~/hooks/use-place-order";
 import { useApprove } from "~/hooks/use-approve";
 import ConnectWallet from "~/components/derived/wagmi/button-connect";
-import { extractMonthAndYear } from "~/utils/helper";
+import { extractMonthAndYear, formatUSD } from "~/utils/helper";
 import { parseUnits } from "viem"
 import { pinjocRouterAddress } from "~/abis/token-abi";
 
@@ -139,7 +139,7 @@ export default function FormSupply() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${balance} ${DebtTokenSymbol}`}</p>
+					<p className="text-base text-white font-semibold">{`${formatUSD(balance)} ${DebtTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">

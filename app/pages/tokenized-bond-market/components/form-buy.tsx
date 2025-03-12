@@ -14,6 +14,7 @@ import ConnectWallet from "~/components/derived/wagmi/button-connect";
 import useMaturityStore from "../states/maturity-state";
 import { useSummary } from "../data/get-summary";
 import { useAccount } from "wagmi";
+import { formatUSD } from "~/utils/helper";
 
 /* BUY */
 export default function FormBuy() {
@@ -71,7 +72,7 @@ export default function FormBuy() {
 			<CardContent className="px-0 py-4">
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
 					<p className="text-sm text-gray-400">Available On Wallet</p>
-					<p className="text-base text-white font-semibold">{`${balance} ${BaseTokenSymbol}`}</p>
+					<p className="text-base text-white font-semibold">{`${formatUSD(balance)} ${BaseTokenSymbol}`}</p>
 				</div>
 				<br />
 				<div className="flex items-center justify-between border-b border-gray-600 pb-1">
